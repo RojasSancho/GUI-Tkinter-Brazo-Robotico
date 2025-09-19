@@ -42,7 +42,6 @@ def cambiar_apariencia():
 ventana = ctk.CTk()
 ventana.title("Brazo Robótico")
 ventana.geometry("800x600")  
-ventana.configure(bg="#19183B")
 
 # ---------------- Primer grid ----------------
 ventana.grid_columnconfigure(0, weight=1) # Mantener centrados los elementos de la columna 0 si la ventana se agranda
