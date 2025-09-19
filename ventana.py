@@ -23,6 +23,7 @@ ventana.title("Brazo Robótico")
 ventana.geometry("1800x1000")  
 ventana.configure(bg="#19183B")
 
+# ---------------- Primer grid ----------------
 # Configurar el frame para que centre la columna y la fila
 ventana.grid_columnconfigure(0, weight=1)
 
