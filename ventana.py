@@ -53,23 +53,33 @@ def activar_salir():
 ventana = ctk.CTk()
 ventana.title("Brazo Robótico")
 ventana.geometry("800x600")  
+ventana.minsize(800, 600)  # tamaño mínimo
+
+tabview = ctk.CTkTabview(ventana, width=780, height=500)
+tabview.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+
+# Crear las pestañas
+tabview.add("Principal")  # pestaña principal
+tabview.add("Configuración")  # pestaña de configuración
 
 # ---------------- Primer grid ----------------
 ventana.grid_columnconfigure(0, weight=1) # Mantener centrados los elementos de la columna 0 si la ventana se agranda
-ventana.grid_rowconfigure(0, weight=0)  # fila del mensaje de bienvenida
+ventana.grid_rowconfigure(0, weight=1)  # fila del mensaje de bienvenida
 ventana.grid_rowconfigure(1, weight=0)  # fila del boton para manual
-ventana.grid_rowconfigure(2, weight=0)  # fila del boton para rutina
-ventana.grid_rowconfigure(3, weight=0)  # fila vacia para "empujar" el boton salir
-ventana.grid_rowconfigure(4, weight=1)  # fila del switch para modo claro u oscuro
-ventana.grid_rowconfigure(5, weight=0)  # fila del boton para salir
-ventana.grid_rowconfigure(6, weight=0)  # fila del boton para salir
 
+
+frame_principal = tabview.tab("Principal")
+frame_principal.grid_columnconfigure(0, weight=1)  # centro horizontal
+frame_principal.grid_rowconfigure(0, weight=0)  # opcional para centrar verticalmente
+frame_principal.grid_rowconfigure(1, weight=0)
+frame_principal.grid_rowconfigure(2, weight=0)
+frame_principal.grid_rowconfigure(3, weight=1) # espacio flexible debajo
 # Etiqueta de bienvenida a la aplicacion
-etiqueta = ctk.CTkLabel(ventana, text="¡Bienvenido!\nControl de brazo robótico\nEstilo pinza".lower(), font=("Bebas Neue", 30))
-etiqueta.grid(row=0, column=0, pady=30)
+etiqueta = ctk.CTkLabel(frame_principal, text="¡Bienvenido!\nControl de brazo robótico\nEstilo pinza".lower(), font=("Bebas Neue", 30))
+etiqueta.grid(row=0, column=0, pady=60)
 
 # Boton para entrar en modo rutinario
-boton_rutina = ctk.CTkButton(ventana, text="Modo de Rutina 🔄", 
+boton_rutina = ctk.CTkButton(frame_principal, text="Modo de Rutina 🔄", 
                             font=("Bebas Neue", 50), 
                             width=365, #en pixeles
                             height=60, #en pixeles
@@ -78,7 +88,7 @@ boton_rutina = ctk.CTkButton(ventana, text="Modo de Rutina 🔄",
 boton_rutina.grid(row=1, column=0, pady=10)
 
 # Boton para entrar en modo manual
-boton_manual = ctk.CTkButton(ventana, text="Modo Manual 🎮", 
+boton_manual = ctk.CTkButton(frame_principal, text="Modo Manual 🎮", 
                             font=("Bebas Neue", 50), 
                             width=365, #en pixeles
                             height=60, #en pixeles
@@ -86,16 +96,26 @@ boton_manual = ctk.CTkButton(ventana, text="Modo Manual 🎮",
                             command=activar_manual)
 boton_manual.grid(row=2, column=0, pady=10)
 
+frame_inferior = ctk.CTkFrame(ventana, fg_color="transparent")
+frame_inferior.grid(row=1, column=0, padx=10, pady=0, sticky="ew")
+# Configurar columnas
+frame_inferior.grid_columnconfigure(0, weight=1)  # columna izquierda
+frame_inferior.grid_columnconfigure(1, weight=1)  # columna derecha
+
 # LED indicador de conexion con el robot
 # Frame contenedor del led y su texto
-frame_led = ctk.CTkFrame(ventana, fg_color="transparent")
-frame_led.grid(row=3, column=0, pady=10)
+frame_led = ctk.CTkFrame(frame_inferior, fg_color="transparent")
+frame_led.grid(row=0, column=0, pady=10, sticky="w")
+frame_led.grid_columnconfigure(0, weight=0)  # Canvas
+frame_led.grid_columnconfigure(1, weight=0)  # Label
+frame_led.grid_columnconfigure(2, weight=1)  # espacio flexible
 
 # Canvas que contiene el led
 canvas_led_conexion = tk.Canvas(frame_led, 
                                 width=40, 
                                 height=40,
                                 highlightthickness=0, 
+                                bd=0,
                                 bg=ventana.cget("bg"))
 canvas_led_conexion.grid(row=0, column=0, pady=10)
 canvas_led_conexion.bind("<Button-1>", toggle_led)
@@ -109,18 +129,21 @@ label_led = ctk.CTkLabel(frame_led,
                         font=("Bebas Neue", 30))
 label_led.grid(row=0, column=1, pady=10)
 
-# Switch para modo claro o modo oscuro del app
-switch_apariencia = ctk.CTkSwitch(ventana, text = "MODO CLARO / MODO OSCURO", command=cambiar_apariencia)
-switch_apariencia.grid(row=5, column=0, pady=15)
-
 # Boton para salir de la aplicacion
-boton_salir = ctk.CTkButton(ventana, text="Salir", 
+boton_salir = ctk.CTkButton(frame_inferior, text="Salir", 
                             font=("Bebas Neue", 30), 
                             width=70, 
                             height=30,
                             corner_radius=13, 
                             command=activar_salir)
-boton_salir.grid(row=6, column=0, pady=15)
+boton_salir.grid(row=0, column=1, pady=10, sticky="e")
 
+# -------------Pestaña de Configuracion-----------------
+
+frame_config = tabview.tab("Configuración")
+# Switch para modo claro o modo oscuro del app
+switch_apariencia = ctk.CTkSwitch(frame_config, text = "MODO CLARO / MODO OSCURO", command=cambiar_apariencia)
+switch_apariencia.grid(row=0, column=0, pady=20, padx=20)
 # Loop para mantener ventana activa
+
 ventana.mainloop()
