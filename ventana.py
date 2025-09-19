@@ -2,7 +2,7 @@ import tkinter as tk
 import customtkinter as ctk
 from tkinter import messagebox
 
-ctk.set_appearance_mode("dark")  # modo oscuro
+ctk.set_appearance_mode("light")  # modo oscuro
 ctk.set_default_color_theme("dark-blue")  # tema azul
 
 # Click al boton de modo manual del brazo robotico
@@ -31,6 +31,12 @@ def activar_salir():
     else:
         print("El usuario eligió No")
 
+# Funcion para cambiar de modo oscuro a claro, o viceversa
+def cambiar_apariencia():
+    if switch_apariencia.get():
+        ctk.set_appearance_mode("dark")  # modo oscuro
+    else:
+        ctk.set_appearance_mode("light")  # modo oscuro
 
 # Creacion de ventana principal, configurar tamano, titulo y color de fondo
 ventana = ctk.CTk()
@@ -44,7 +50,8 @@ ventana.grid_rowconfigure(0, weight=0)  # fila del mensaje de bienvenida
 ventana.grid_rowconfigure(1, weight=0)  # fila del boton para manual
 ventana.grid_rowconfigure(2, weight=0)  # fila del boton para rutina
 ventana.grid_rowconfigure(3, weight=1)  # fila vacia para "empujar" el boton salir
-ventana.grid_rowconfigure(4, weight=0)  # fila del boton para salir
+ventana.grid_rowconfigure(4, weight=0)  # fila del switch para modo claro u oscuro
+ventana.grid_rowconfigure(5, weight=0)  # fila del boton para salir
 
 # Etiqueta de bienvenida a la aplicacion
 etiqueta = ctk.CTkLabel(ventana, text="¡Bienvenido!\nControl de brazo robótico\nEstilo pinza", font=("Bebas Neue", 30))
@@ -68,6 +75,11 @@ boton_manual = ctk.CTkButton(ventana, text="Modo Manual 🎮",
                             command=activar_manual)
 boton_manual.grid(row=2, column=0, pady=10)
 
+# Switch para modo claro o modo oscuro del app
+switch_apariencia = ctk.CTkSwitch(ventana, text = "Modo Claro / Modo Oscuro", 
+                                command=cambiar_apariencia)
+switch_apariencia.grid(row=4, column=0, pady=25)
+
 # Boton para salir de la aplicacion
 boton_salir = ctk.CTkButton(ventana, text="Salir", 
                             font=("Bebas Neue", 50), 
@@ -75,7 +87,7 @@ boton_salir = ctk.CTkButton(ventana, text="Salir",
                             height=60,
                             corner_radius=13, 
                             command=activar_salir)
-boton_salir.grid(row=4, column=0, pady=100)
+boton_salir.grid(row=5, column=0, pady=25)
 
 # Loop para mantener ventana activa
 ventana.mainloop()
