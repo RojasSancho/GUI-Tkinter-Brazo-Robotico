@@ -21,6 +21,17 @@ def activar_rutina():
     else:
         print("El usuario eligió No")
 
+# Click al boton de salir
+def activar_salir():
+    """Cierra la ventana principal."""
+    respuesta = messagebox.askyesno("Confirmación", "¿Deseas salir de la aplicación?")
+    if respuesta:
+        print("El usuario eligió Sí")
+        ventana.destroy()
+    else:
+        print("El usuario eligió No")
+
+
 # Creacion de ventana principal, configurar tamano, titulo y color de fondo
 ventana = ctk.CTk()
 ventana.title("Brazo Robótico")
@@ -28,10 +39,12 @@ ventana.geometry("800x600")
 ventana.configure(bg="#19183B")
 
 # ---------------- Primer grid ----------------
-ventana.grid_columnconfigure(0, weight=1)
+ventana.grid_columnconfigure(0, weight=1) # Mantener centrados los elementos de la columna 0 si la ventana se agranda
 ventana.grid_rowconfigure(0, weight=0)  # fila del mensaje de bienvenida
 ventana.grid_rowconfigure(1, weight=0)  # fila del boton para manual
 ventana.grid_rowconfigure(2, weight=0)  # fila del boton para rutina
+ventana.grid_rowconfigure(3, weight=1)  # fila vacia para "empujar" el boton salir
+ventana.grid_rowconfigure(4, weight=0)  # fila del boton para salir
 
 # Etiqueta de bienvenida a la aplicacion
 etiqueta = ctk.CTkLabel(ventana, text="¡Bienvenido!\nControl de brazo robótico\nEstilo pinza", font=("Bebas Neue", 30))
@@ -61,8 +74,8 @@ boton_salir = ctk.CTkButton(ventana, text="Salir",
                             width=200, 
                             height=60,
                             corner_radius=13, 
-                            command=None)
-boton_salir.grid(row=3, column=0, pady=100)
+                            command=activar_salir)
+boton_salir.grid(row=4, column=0, pady=100)
 
 # Loop para mantener ventana activa
 ventana.mainloop()
