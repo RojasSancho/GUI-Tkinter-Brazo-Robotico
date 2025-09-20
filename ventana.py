@@ -2,6 +2,12 @@ import tkinter as tk
 import customtkinter as ctk
 from tkinter import messagebox
 
+# ------------------------------
+# Variables de estado
+# ------------------------------
+modo_actual = None  # "MANUAL" o "RUTINA"
+arduino_conectado = False  # Indicador de conexión (simulado aquí)
+
 ctk.set_appearance_mode("light")  # modo oscuro
 ctk.set_default_color_theme("dark-blue")  # tema azul
 
@@ -10,6 +16,7 @@ def activar_manual():
     respuesta = messagebox.askyesno("Confirmación", "¿Activar modo manual?")
     if respuesta:  
         print("El usuario eligió Sí")
+        modo_actual = "MANUAL"
     else:  
         print("El usuario eligió No")
 
@@ -18,15 +25,18 @@ def activar_rutina():
     respuesta = messagebox.askyesno("Confirmación", "¿Activar modo de rutina?")
     if respuesta:
         print("El usuario eligió Sí")
+        modo_actual = "RUTINA"
     else:
         print("El usuario eligió No")
 
 # Funcion para simular conexion o desconexion presionando led
 def toggle_led(event=None):
     if label_led.cget("text") == "Desconectado":
+        arduino_conectado = False
         canvas_led_conexion.itemconfig(led_conexion, fill="green")  # cambiar a verde
         label_led.configure(text="Conectado")  # actualizar texto
     else:  # si el LED está en verde (conectado)
+        arduino_conectado = True
         canvas_led_conexion.itemconfig(led_conexion, fill="red")  # cambiar a rojo
         label_led.configure(text="Desconectado")  # actualizar texto
 
