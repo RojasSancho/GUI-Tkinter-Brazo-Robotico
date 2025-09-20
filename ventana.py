@@ -75,7 +75,7 @@ frame_principal.grid_rowconfigure(1, weight=0)
 frame_principal.grid_rowconfigure(2, weight=0)
 frame_principal.grid_rowconfigure(3, weight=1) # espacio flexible debajo
 # Etiqueta de bienvenida a la aplicacion
-etiqueta = ctk.CTkLabel(frame_principal, text="¡Bienvenido!\nControl de brazo robótico\nEstilo pinza".lower(), font=("Bebas Neue", 30))
+etiqueta = ctk.CTkLabel(frame_principal, text="¡Bienvenido!\nControl de brazo robótico\nEstilo pinza", font=("Bebas Neue", 30))
 etiqueta.grid(row=0, column=0, pady=60)
 
 # Boton para entrar en modo rutinario
