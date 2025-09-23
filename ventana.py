@@ -2,6 +2,8 @@ import tkinter as tk
 import customtkinter as ctk
 from tkinter import messagebox
 
+from arduinodectector import ArduinoDetector 
+
 # ------------------------------
 # Variables de estado
 # ------------------------------
@@ -30,15 +32,16 @@ def activar_rutina():
         print("El usuario eligió No")
 
 # Funcion para simular conexion o desconexion presionando led
+
+detector = ArduinoDetector()#Instancia a la clase arduinodectector
+
 def toggle_led(event=None):
-    if label_led.cget("text") == "Desconectado":
-        arduino_conectado = False
-        canvas_led_conexion.itemconfig(led_conexion, fill="green")  # cambiar a verde
-        label_led.configure(text="Conectado")  # actualizar texto
-    else:  # si el LED está en verde (conectado)
-        arduino_conectado = True
-        canvas_led_conexion.itemconfig(led_conexion, fill="red")  # cambiar a rojo
-        label_led.configure(text="Desconectado")  # actualizar texto
+    if detector.detectar():  # ✅ Llama correctamente al método con 'self'
+        canvas_led_conexion.itemconfig(led_conexion, fill="green")
+        label_led.configure(text=f"Conectado en {detector.obtener_puerto()}")
+    else:
+        canvas_led_conexion.itemconfig(led_conexion, fill="red")
+        label_led.configure(text="Desconectado")
 
 # Funcion para cambiar de modo oscuro a claro, o viceversa
 def cambiar_apariencia():
