@@ -3,6 +3,7 @@ import customtkinter as ctk
 from tkinter import messagebox
 
 from arduinodectector import ArduinoDetector 
+from modoautomatico import ModoAutomata
 
 # ------------------------------
 # Variables de estado
@@ -19,6 +20,7 @@ def activar_manual():
     if respuesta:  
         print("El usuario eligió Sí")
         modo_actual = "MANUAL"
+        
     else:  
         print("El usuario eligió No")
 
@@ -28,12 +30,15 @@ def activar_rutina():
     if respuesta:
         print("El usuario eligió Sí")
         modo_actual = "RUTINA"
+        ventana.destroy()
+        app = ModoAutomata()
     else:
         print("El usuario eligió No")
 
 # Funcion para simular conexion o desconexion presionando led
 
 detector = ArduinoDetector()#Instancia a la clase arduinodectector
+
 
 def toggle_led(event=None):
     if detector.detectar():  # ✅ Llama correctamente al método con 'self'
