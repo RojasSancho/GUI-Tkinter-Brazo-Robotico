@@ -77,7 +77,6 @@ ventana.grid_columnconfigure(0, weight=1) # Mantener centrados los elementos de 
 ventana.grid_rowconfigure(0, weight=1)  # fila del mensaje de bienvenida
 ventana.grid_rowconfigure(1, weight=0)  # fila del boton para manual
 
-
 frame_principal = tabview.tab("Principal")
 frame_principal.grid_columnconfigure(0, weight=1)  # centro horizontal
 frame_principal.grid_rowconfigure(0, weight=0)  # opcional para centrar verticalmente
