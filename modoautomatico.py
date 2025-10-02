@@ -135,10 +135,10 @@ class ModoAutomata:
 
         # Menú desplegable
         menu_desplegable = ctk.CTkOptionMenu(self.frame_central,
-                                             values=["Rutina 1", "Rutina 2", "Rutina 3", "Rutina 4"],
-                                             font=("Bebas Neue", 30),
-                                             width=600, height=30,
-                                             command=self.optionmenu_callback)
+                                            values=["Rutina 1", "Rutina 2", "Rutina 3", "Rutina 4"],
+                                            font=("Bebas Neue", 30),
+                                            width=600, height=30,
+                                            command=self.optionmenu_callback)
         menu_desplegable.grid(row=1, column=0, padx=20, pady=20, sticky="nw")
 
         #Caja de etxto con la despcripcion de la subriutina

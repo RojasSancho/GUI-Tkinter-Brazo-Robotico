@@ -7,7 +7,6 @@ import serial.tools.list_ports
 #for puerto in puertos:
 #    print(puerto)
 
-
 class ArduinoDetector:
     #Clase para detectar si un Arduino está conectado.
 
