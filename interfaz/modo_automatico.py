@@ -4,15 +4,53 @@ from tkinter import messagebox
 # from tkVideoPlayer import TkinterVideo
 
 
-class ModoAutomatico:
-    def __init__(self):
-        # ventana principal
-        self.ventana_automatico = ctk.CTk()
-        self.ventana_automatico.title("Modo automático")
-        self.ventana_automatico.geometry("1366x768")
-        self.ventana_automatico.minsize(1366, 768)
+class ModoAutomatico(ctk.CTkToplevel):
+    def __init__(self, parent, led_frame=None):
+        super().__init__(parent)  # hereda ventana principal
+        self.title("Modo automático")
+        self.geometry("1366x768")
+        self.minsize(1366, 768)
 
-        # variables
+        # -------------------------------
+        # Configuración filas y columnas
+        # -------------------------------
+        self.grid_rowconfigure(0, weight=1)  # frame central se expande
+        self.grid_rowconfigure(1, weight=0)  # frame inferior queda fijo
+        self.grid_columnconfigure(0, weight=1)
+
+        # -------------------------------
+        # Frames principales
+        # -------------------------------
+        # Frame central (contenido de rutinas)
+        self.frame_central = ctk.CTkFrame(self)
+        self.frame_central.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+
+        # Frame inferior (botón volver)
+        self.frame_inferior = ctk.CTkFrame(self, fg_color="transparent", height=80)
+        self.frame_inferior.grid(row=1, column=0, sticky="ew", padx=10, pady=10)
+        self.frame_inferior.grid_columnconfigure(0, weight=1)
+        self.frame_inferior.grid_columnconfigure(1, weight=0)  # botón a la derecha
+
+        # Botón volver al principal
+        boton_volver = ctk.CTkButton(
+            self.frame_inferior,
+            text="Volver al Principal",
+            font=("Bebas Neue", 30),
+            width=200,
+            height=40,
+            corner_radius=13,
+            command=self.destroy,
+        )
+        boton_volver.grid(row=0, column=1, sticky="e", padx=10, pady=10)
+
+        # Si nos pasan el frame del LED, lo volvemos hijo de la subventana
+        if led_frame:
+            led_frame.master = self
+            led_frame.grid(row=1, column=0, padx=10, pady=0, sticky="ew")
+
+        # -------------------------------
+        # Variables
+        # -------------------------------
         self.subrutina_elegida = ctk.StringVar(value="")
         self.descripcion_subrutina_elegida = ctk.StringVar(
             value="Seleccione una rutina para ver la descripción"
@@ -24,13 +62,8 @@ class ModoAutomatico:
             "Rutina 3": "video3.mp4",
             "Rutina 4": "video4.mp4",
         }
-        # frames principales
-        self.frame_central = ctk.CTkFrame(
-            self.ventana_automatico, width=780, height=500
-        )
 
-        self.frame_central.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
-
+        # Frames internos dentro de frame_central
         self.frame_descripcion = ctk.CTkFrame(
             self.frame_central, width=340, height=200, fg_color="white"
         )
@@ -65,27 +98,13 @@ class ModoAutomatico:
             row=1, column=1, rowspan=3, padx=10, pady=20, sticky="nsew"
         )
 
-        #  Configuración del grid
-        self.ventana_automatico.grid_columnconfigure(0, weight=1)
-        self.ventana_automatico.grid_rowconfigure(0, weight=1)
-        self.ventana_automatico.grid_rowconfigure(1, weight=0)
-
-        # Frame inferior
-        self.frame_inferior = ctk.CTkFrame(
-            self.ventana_automatico, fg_color="transparent"
-        )
-        self.frame_inferior.grid(row=1, column=0, padx=10, pady=0, sticky="ew")
-        self.frame_inferior.grid_columnconfigure(0, weight=1)
-        self.frame_inferior.grid_columnconfigure(1, weight=1)
-
-        # Widgets
+        # -------------------------------
+        # Crear widgets
+        # -------------------------------
         self.crear_widgets()
 
-        # Mainloop ----------
-        self.ventana_automatico.mainloop()
-
     #####################
-    """ Métodos"""
+    """ Métodos """
 
     #####################
     def activar_salir(self):
@@ -93,7 +112,7 @@ class ModoAutomatico:
             "Confirmación", "¿Deseas salir de la aplicación?"
         )
         if respuesta:
-            self.ventana_automatico.destroy()
+            self.destroy()
 
     def optionmenu_callback(self, choice):
         print("Seleccionada rutina:", choice)
@@ -113,8 +132,8 @@ class ModoAutomatico:
         else:
             texto = "No hay información disponible"
         self.descripcion_subrutina_elegida.set(texto)
-        self.cajaTexto.delete("0.0", "end")  # borra lo que haya
-        self.cajaTexto.insert("0.0", texto)  # inserta el nuevo texto
+        self.cajaTexto.delete("0.0", "end")
+        self.cajaTexto.insert("0.0", texto)
 
     def aumentar(self):
         self.numero_var.set(self.numero_var.get() + 1)
@@ -131,32 +150,19 @@ class ModoAutomatico:
         )
 
     def detener_rutina(self):
-        print(f"Se dentendra la:  {self.subrutina_elegida.get()}")
+        print(f"Se detendrá la:  {self.subrutina_elegida.get()}")
 
     def cambiar_video(self, choice):
-        """Cambia el video según la rutina elegida"""
         archivo_video = self.videos.get(choice)
         if archivo_video:
             # Detener y cargar nuevo video
             self.video_player.stop()
             self.video_player.load(archivo_video)
-            self.video_player.play()  # autoplay
+            self.video_player.play()
         else:
             print("No se encontró video para:", choice)
 
     def crear_widgets(self):
-        # Botón salir
-        boton_salir = ctk.CTkButton(
-            self.frame_inferior,
-            text="Salir",
-            font=("Bebas Neue", 30),
-            width=70,
-            height=30,
-            corner_radius=13,
-            command=self.activar_salir,
-        )
-        boton_salir.grid(row=0, column=1, pady=10, sticky="e")
-
         # Label menú
         label_subrutinas = ctk.CTkLabel(
             self.frame_central,
@@ -176,7 +182,7 @@ class ModoAutomatico:
         )
         menu_desplegable.grid(row=1, column=0, padx=20, pady=20, sticky="nw")
 
-        # Caja de etxto con la despcripcion de la subriutina
+        # Caja de texto descripción
         self.cajaTexto = ctk.CTkTextbox(
             self.frame_descripcion, width=300, corner_radius=0
         )
@@ -200,13 +206,12 @@ class ModoAutomatico:
         )
         entrada_numero.grid(row=0, column=0, padx=20, pady=20)
 
-        # Botón aumentar
+        # Botones ↑ ↓
         boton_up = ctk.CTkButton(
             self.frame_spinner, text="▲", width=110, command=self.aumentar
         )
         boton_up.grid(row=0, column=1, padx=2, pady=20)
 
-        # Botón disminuir
         boton_down = ctk.CTkButton(
             self.frame_spinner, text="▼", width=110, command=self.disminuir
         )
@@ -224,7 +229,7 @@ class ModoAutomatico:
         )
         boton_ejecutar.grid(row=0, column=2, padx=2, pady=2)
 
-        # Boton detener la ejecucion
+        # Botón detener
         boton_detener_subrutina = ctk.CTkButton(
             self.frame_boton_ejecutar,
             text="Detener",
@@ -236,10 +241,10 @@ class ModoAutomatico:
         )
         boton_detener_subrutina.grid(row=0, column=3, padx=2, pady=2)
 
-        # Label reproductor-subrutinas
+        # Label reproductor
         label_previsualizador_subrutinas = ctk.CTkLabel(
             self.frame_label_video_player,
-            text="Previsulizacion de rutinas pre-programadas",
+            text="Previsualizacion de rutinas pre-programadas",
             font=("Bebas Neue", 30),
         )
         label_previsualizador_subrutinas.grid(
@@ -250,11 +255,15 @@ class ModoAutomatico:
         # self.video_player = TkinterVideo(self.frame_video_player, scaled=True, loop=1)
         # self.video_player.pack(expand=True, fill="both")
 
-        # Reproducir el video inicial
+        # Reproducir video inicial
         # self.cambiar_video("Rutina 1")
         """No logre instalar la libreria necesaria tkVideoPlayer"""
 
 
-"""se crea la app"""
+# -------------------------------
+# Para pruebas independientes
+# -------------------------------
 if __name__ == "__main__":
-    app = ModoAutomatico()
+    root = ctk.CTk()  # ventana principal simulada
+    app = ModoAutomatico(root)
+    root.mainloop()

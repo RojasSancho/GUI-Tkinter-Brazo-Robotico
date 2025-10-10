@@ -30,13 +30,14 @@ def activar_manual():
 
 
 def activar_rutina(ventana):
+    """Abre la ventana de modo automático"""
     global modo_actual
     respuesta = messagebox.askyesno("Confirmación", "¿Activar modo de rutina?")
     if respuesta:
         print("El usuario eligió Sí")
         modo_actual = "RUTINA"
-        ventana.destroy()
-        app = ModoAutomatico()
+        # Abre la ventana de modo automático como subventana
+        ModoAutomatico(parent=ventana)
     else:
         print("El usuario eligió No")
 
@@ -104,6 +105,7 @@ def ejecutar_app():
     )
     etiqueta.grid(row=0, column=0, pady=60)
 
+    # --- Botones ---
     boton_rutina = ctk.CTkButton(
         frame_principal,
         text="Modo de Rutina 🔄",
