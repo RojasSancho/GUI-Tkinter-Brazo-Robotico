@@ -37,7 +37,9 @@ def abrir_modo_rutina(ventana, frame_inferior):
         ventana.withdraw()  # Oculta la ventana principal
 
         def volver_al_principal():
-            ventana.deiconify()  # Muestra nuevamente la ventana principal
+            ventana.state("zoomed")  # Maximizar primero
+            ventana.update_idletasks()  # Forzar redibujo
+            ventana.deiconify()
 
         # Abrir ventana modo automático
         ModoAutomatico(parent=ventana, volver_callback=volver_al_principal)

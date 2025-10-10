@@ -16,6 +16,9 @@ class ModoAutomatico(ctk.CTkToplevel):
         self.state("zoomed")
         self.minsize(1366, 768)
 
+        # Manejar cierre con la X
+        self.protocol("WM_DELETE_WINDOW", self.cerrar_completamente)
+
         # ------------------------------
         # Variables
         # ------------------------------
@@ -280,6 +283,10 @@ class ModoAutomatico(ctk.CTkToplevel):
             self.after(30, mostrar_frame)
 
         mostrar_frame()
+
+    def cerrar_completamente(self):
+        self.destroy()
+        self.parent.destroy()
 
 
 # ------------------------------
