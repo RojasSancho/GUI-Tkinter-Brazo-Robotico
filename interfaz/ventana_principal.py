@@ -57,7 +57,7 @@ def activar_salir(ventana):
 def ejecutar_app():
     ventana = ctk.CTk()
     ventana.title("Brazo Robótico")
-    ventana.geometry("800x600")
+    ventana.after(0, lambda: ventana.state("zoomed"))
     ventana.minsize(800, 600)
 
     detector = ArduinoDetector()

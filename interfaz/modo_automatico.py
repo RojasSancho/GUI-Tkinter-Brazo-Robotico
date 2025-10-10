@@ -13,7 +13,7 @@ class ModoAutomatico(ctk.CTkToplevel):
         self.volver_callback = volver_callback
 
         self.title("Modo Automático")
-        self.geometry("1366x768")
+        self.state("zoomed")
         self.minsize(1366, 768)
 
         # ------------------------------
@@ -46,7 +46,9 @@ class ModoAutomatico(ctk.CTkToplevel):
         self.frame_central.grid_rowconfigure(2, weight=0)
         self.frame_central.grid_rowconfigure(3, weight=0)
         self.frame_central.grid_rowconfigure(4, weight=1)
-        self.frame_central.grid_columnconfigure(0, weight=1)
+        self.frame_central.grid_columnconfigure(1, weight=1)
+        for i in range(1, 5):
+            self.frame_central.grid_rowconfigure(i, weight=1)
 
         # Frame descripción
         self.frame_descripcion = ctk.CTkFrame(
@@ -106,12 +108,12 @@ class ModoAutomatico(ctk.CTkToplevel):
         )
 
         # Label que contendrá cada frame
-        self.label_video = ctk.CTkLabel(self.frame_video_player)
+        self.label_video = ctk.CTkLabel(
+            self.frame_video_player, text="", fg_color="black"
+        )
         self.label_video.pack(expand=True, fill="both")
 
-        self.reproducir_video_prueba(
-            r"C:\Users\PC JOSUE\Desktop\GUI Tkinter Brazo Robotico\interfaz\Terabyte-VideoTempFinal.mp4"
-        )
+        self.reproducir_video_prueba(r"videos\prueba2.mp4")
 
     # ------------------------------
     # Métodos
@@ -234,30 +236,47 @@ class ModoAutomatico(ctk.CTkToplevel):
         boton_detener_subrutina.grid(row=0, column=3, padx=2, pady=2)
 
     def reproducir_video_prueba(self, ruta_video):
-        # Intentamos abrir el video y verificamos si se puede
         self.cap = cv2.VideoCapture(ruta_video)
+
         if not self.cap.isOpened():
             print("No se pudo abrir el video:", ruta_video)
-            return  # Salimos para evitar el crash
+            return
 
         def mostrar_frame():
             ret, frame = self.cap.read()
-            if not ret:  # Si termina el video, reinicia
+            if not ret:
                 self.cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
                 ret, frame = self.cap.read()
 
-            # Forzar update para tener dimensiones correctas
-            self.label_video.update()
-            ancho_label = max(self.label_video.winfo_width(), 100)
-            alto_label = max(self.label_video.winfo_height(), 100)
+            self.label_video.update_idletasks()
+            ancho_label = self.label_video.winfo_width()
+            alto_label = self.label_video.winfo_height()
 
-            # Redimensionar frame
-            frame = cv2.resize(frame, (ancho_label, alto_label))
+            if ancho_label <= 1 or alto_label <= 1:
+                self.after(100, mostrar_frame)
+                return
+
+            alto_video, ancho_video = frame.shape[:2]
+            factor_escala = min(ancho_label / ancho_video, alto_label / alto_video)
+            nuevo_ancho = int(ancho_video * factor_escala)
+            nuevo_alto = int(alto_video * factor_escala)
+
+            frame = cv2.resize(frame, (nuevo_ancho, nuevo_alto))
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-            img = CTkImage(Image.fromarray(frame), size=(ancho_label, alto_label))
-            self.label_video.configure(image=img)
-            self.label_video.image = img
+            # Crear fondo negro y pegar video centrado
+            fondo = Image.new("RGB", (ancho_label, alto_label), color=(0, 0, 0))
+            fondo.paste(
+                Image.fromarray(frame),
+                ((ancho_label - nuevo_ancho) // 2, (alto_label - nuevo_alto) // 2),
+            )
+
+            # Convertir a PhotoImage para Tkinter
+            img_final = ImageTk.PhotoImage(fondo)
+
+            self.label_video.configure(image=img_final)
+            self.label_video.image = img_final
+
             self.after(30, mostrar_frame)
 
         mostrar_frame()
@@ -269,10 +288,11 @@ class ModoAutomatico(ctk.CTkToplevel):
 if __name__ == "__main__":
     root = ctk.CTk()
     root.title("Ventana principal simulada")
-    root.geometry("800x600")
+    root.after(100, lambda: root.state("zoomed"))
 
     def mostrar_ventana_principal():
         root.deiconify()
+        root.after(100, lambda: root.state("zoomed"))
 
     app = ModoAutomatico(root, volver_callback=mostrar_ventana_principal)
     root.withdraw()
