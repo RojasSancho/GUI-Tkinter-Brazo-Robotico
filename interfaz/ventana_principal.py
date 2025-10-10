@@ -23,38 +23,38 @@ def activar_manual():
     global modo_actual
     respuesta = messagebox.askyesno("Confirmación", "¿Activar modo manual?")
     if respuesta:
-        print("El usuario eligió Sí")
+        print("Modo Manual activado")
         modo_actual = "MANUAL"
     else:
-        print("El usuario eligió No")
+        print("Modo Manual cancelado")
 
 
-def activar_rutina(ventana):
-    """Abre la ventana de modo automático"""
+def abrir_modo_rutina(ventana, frame_inferior):
     global modo_actual
     respuesta = messagebox.askyesno("Confirmación", "¿Activar modo de rutina?")
     if respuesta:
-        print("El usuario eligió Sí")
         modo_actual = "RUTINA"
-        # Abre la ventana de modo automático como subventana
-        ModoAutomatico(parent=ventana)
+        ventana.withdraw()  # Oculta la ventana principal
+
+        def volver_al_principal():
+            ventana.deiconify()  # Muestra nuevamente la ventana principal
+
+        # Abrir ventana modo automático
+        ModoAutomatico(parent=ventana, volver_callback=volver_al_principal)
     else:
-        print("El usuario eligió No")
+        print("Modo Rutina cancelado")
 
 
 def activar_salir(ventana):
     respuesta = messagebox.askyesno("Confirmación", "¿Deseas salir de la aplicación?")
     if respuesta:
-        print("El usuario eligió Sí")
         ventana.destroy()
-    else:
-        print("El usuario eligió No")
 
 
+# ------------------------------
+# Ejecutar aplicación
+# ------------------------------
 def ejecutar_app():
-    # ------------------------------
-    # Creación de ventana principal
-    # ------------------------------
     ventana = ctk.CTk()
     ventana.title("Brazo Robótico")
     ventana.geometry("800x600")
@@ -62,6 +62,9 @@ def ejecutar_app():
 
     detector = ArduinoDetector()
 
+    # ------------------------------
+    # Función para toggle LED de conexión
+    # ------------------------------
     def toggle_led(event=None):
         if detector.detectar():
             canvas_led_conexion.itemconfig(led_conexion, fill="green")
@@ -78,11 +81,10 @@ def ejecutar_app():
         canvas_led_conexion.config(bg=ventana.cget("bg"))
 
     # ------------------------------
-    # Layout principal
+    # Layout principal con tabs
     # ------------------------------
     tabview = ctk.CTkTabview(ventana, width=780, height=500)
     tabview.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
-
     tabview.add("Principal")
     tabview.add("Configuración")
 
@@ -105,7 +107,16 @@ def ejecutar_app():
     )
     etiqueta.grid(row=0, column=0, pady=60)
 
-    # --- Botones ---
+    # ------------------------------
+    # Botones de modo
+    # ------------------------------
+    frame_inferior = ctk.CTkFrame(
+        ventana, fg_color="transparent"
+    )  # Frame para pasar a modo automático
+    frame_inferior.grid(row=1, column=0, padx=10, pady=0, sticky="ew")
+    frame_inferior.grid_columnconfigure(0, weight=1)
+    frame_inferior.grid_columnconfigure(1, weight=1)
+
     boton_rutina = ctk.CTkButton(
         frame_principal,
         text="Modo de Rutina 🔄",
@@ -113,7 +124,7 @@ def ejecutar_app():
         width=365,
         height=60,
         corner_radius=13,
-        command=lambda: activar_rutina(ventana),
+        command=lambda: abrir_modo_rutina(ventana, frame_inferior),
     )
     boton_rutina.grid(row=1, column=0, pady=10)
 
@@ -131,11 +142,6 @@ def ejecutar_app():
     # ------------------------------
     # Parte inferior (LED y salir)
     # ------------------------------
-    frame_inferior = ctk.CTkFrame(ventana, fg_color="transparent")
-    frame_inferior.grid(row=1, column=0, padx=10, pady=0, sticky="ew")
-    frame_inferior.grid_columnconfigure(0, weight=1)
-    frame_inferior.grid_columnconfigure(1, weight=1)
-
     frame_led = ctk.CTkFrame(frame_inferior, fg_color="transparent")
     frame_led.grid(row=0, column=0, pady=10, sticky="w")
     frame_led.grid_columnconfigure(0, weight=0)
@@ -178,7 +184,8 @@ def ejecutar_app():
     )
     switch_apariencia.grid(row=0, column=0, pady=20, padx=20)
 
-    # ------------------------------
-    # Iniciar loop principal
-    # ------------------------------
     ventana.mainloop()
+
+
+if __name__ == "__main__":
+    ejecutar_app()
