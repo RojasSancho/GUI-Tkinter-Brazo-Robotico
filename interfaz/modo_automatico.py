@@ -116,7 +116,7 @@ class ModoAutomatico(ctk.CTkToplevel):
         )
         self.label_video.pack(expand=True, fill="both")
 
-        self.reproducir_video_prueba(r"videos\prueba2.mp4")
+        self.reproducir_video_prueba(r"videos\VideoTemu.mp4")
 
     # ------------------------------
     # Métodos
