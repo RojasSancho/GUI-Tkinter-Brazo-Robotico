@@ -3,7 +3,6 @@ import customtkinter as ctk
 from tkinter import messagebox
 from PIL import Image, ImageTk
 import cv2
-from customtkinter import CTkImage
 
 
 class ModoAutomatico(ctk.CTkToplevel):
