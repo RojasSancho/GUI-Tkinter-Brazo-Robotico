@@ -46,9 +46,10 @@ class ModoAutomatico(ctk.CTkToplevel):
         self.frame_central.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
         self.frame_central.grid_rowconfigure(0, weight=0)
         self.frame_central.grid_rowconfigure(1, weight=0)
-        self.frame_central.grid_rowconfigure(2, weight=0)
+        self.frame_central.grid_rowconfigure(2, weight=1)
         self.frame_central.grid_rowconfigure(3, weight=0)
-        self.frame_central.grid_rowconfigure(4, weight=1)
+        self.frame_central.grid_rowconfigure(4, weight=0)
+        self.frame_central.grid_rowconfigure(5, weight=0)
         self.frame_central.grid_columnconfigure(1, weight=1, uniform="col")
         self.frame_central.grid_columnconfigure(0, weight=1, uniform="col")
         for i in range(1, 5):
