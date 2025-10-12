@@ -49,33 +49,32 @@ class ModoAutomatico(ctk.CTkToplevel):
         self.frame_central.grid_rowconfigure(2, weight=0)
         self.frame_central.grid_rowconfigure(3, weight=0)
         self.frame_central.grid_rowconfigure(4, weight=1)
-        self.frame_central.grid_columnconfigure(1, weight=1)
+        self.frame_central.grid_columnconfigure(1, weight=1, uniform="col")
+        self.frame_central.grid_columnconfigure(0, weight=1, uniform="col")
         for i in range(1, 5):
             self.frame_central.grid_rowconfigure(i, weight=1)
 
         # Frame descripción
         self.frame_descripcion = ctk.CTkFrame(
-            self.frame_central, width=340, height=200, fg_color="white"
+            self.frame_central, height=200, fg_color="white"
         )
         self.frame_descripcion.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
 
         # Frame número repeticiones
-        self.frame_numero_repeticiones = ctk.CTkFrame(
-            self.frame_central, width=340, height=100
-        )
+        self.frame_numero_repeticiones = ctk.CTkFrame(self.frame_central, height=100)
         self.frame_numero_repeticiones.grid(
             row=3, column=0, padx=10, pady=10, sticky="nsew"
         )
 
         # Frame spinner
         self.frame_spinner = ctk.CTkFrame(self.frame_central, fg_color="transparent")
-        self.frame_spinner.grid(row=4, column=0, padx=20, pady=20, sticky="n")
+        self.frame_spinner.grid(row=4, column=0, padx=20, pady=20, sticky="nsew")
 
         # Frame botón ejecutar y detener
         self.frame_boton_ejecutar = ctk.CTkFrame(
             self.frame_central, fg_color="transparent"
         )
-        self.frame_boton_ejecutar.grid(row=5, column=0, padx=20, pady=20, sticky="n")
+        self.frame_boton_ejecutar.grid(row=5, column=0, padx=20, pady=20, sticky="nsew")
 
         # ------------------------------
         # Frame inferior con botón volver
@@ -104,7 +103,7 @@ class ModoAutomatico(ctk.CTkToplevel):
 
         # Frame donde se mostrará el video
         self.frame_video_player = ctk.CTkFrame(
-            self.frame_central, width=685, height=400, fg_color="white"
+            self.frame_central, height=400, fg_color="white"
         )
         self.frame_video_player.grid(
             row=1, column=1, rowspan=4, padx=10, pady=20, sticky="nsew"
@@ -116,7 +115,7 @@ class ModoAutomatico(ctk.CTkToplevel):
         )
         self.label_video.pack(expand=True, fill="both")
 
-        self.reproducir_video_prueba(r"videos\prueba2.mp4")
+        self.reproducir_video_prueba(r"videos\VideoTemu.mp4")
 
     # ------------------------------
     # Métodos
@@ -172,16 +171,13 @@ class ModoAutomatico(ctk.CTkToplevel):
             self.frame_central,
             values=["Rutina 1", "Rutina 2", "Rutina 3", "Rutina 4"],
             font=("Bebas Neue", 30),
-            width=600,
             height=30,
             command=self.optionmenu_callback,
         )
-        menu_desplegable.grid(row=1, column=0, padx=20, pady=20, sticky="nw")
+        menu_desplegable.grid(row=1, column=0, padx=20, pady=20, sticky="ew")
 
         # Caja de texto con la descripción
-        self.cajaTexto = ctk.CTkTextbox(
-            self.frame_descripcion, width=300, corner_radius=0
-        )
+        self.cajaTexto = ctk.CTkTextbox(self.frame_descripcion, corner_radius=0)
         self.cajaTexto.grid(row=0, column=0, sticky="nsew")
         self.cajaTexto.insert("0.0", self.descripcion_subrutina_elegida.get())
 
