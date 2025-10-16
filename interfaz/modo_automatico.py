@@ -173,7 +173,7 @@ class ModoAutomatico(ctk.CTkToplevel):
             self.frame_central,
             values=["Rutina 1", "Rutina 2", "Rutina 3", "Rutina 4"],
             font=("Bebas Neue", 30),
-            height=30,
+            height=5,
             command=self.optionmenu_callback,
         )
         menu_desplegable.grid(row=1, column=0, padx=20, pady=20, sticky="nsew")
