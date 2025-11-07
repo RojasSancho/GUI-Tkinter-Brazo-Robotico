@@ -200,15 +200,17 @@ class ModoAutomatico(ctk.CTkToplevel):
             self.frame_spinner,
             textvariable=self.numero_var,
             width=120,
+            height = 40,
             justify="center",
         )
-        entrada_numero.grid(row=0, column=0, sticky="nsew", padx=2, pady=2)
+        entrada_numero.grid(row=0, column=0, sticky="nsew", padx=0, pady=0)
 
-        boton_up = ctk.CTkButton(self.frame_spinner, text="▲", command=self.aumentar)
-        boton_up.grid(row=0, column=1, sticky="nsew", padx=2, pady=2)
+        boton_up = ctk.CTkButton(self.frame_spinner, text="▲", height = 40, command=self.aumentar)
+        boton_up.grid(row=0, column=1, sticky="nsew", padx=0, pady=0)
 
-        boton_down = ctk.CTkButton(self.frame_spinner, text="▼", command=self.disminuir)
-        boton_down.grid(row=0, column=2, sticky="nsew", padx=2, pady=2)
+        boton_down = ctk.CTkButton(self.frame_spinner, text="▼", height = 40, command=self.disminuir)
+        boton_down.grid(row=0, column=2, sticky="nsew", padx=0, pady=0)
+
 
         # Botones ejecutar y detener
         self.frame_boton_ejecutar.grid_rowconfigure(0, weight=1)
@@ -222,7 +224,7 @@ class ModoAutomatico(ctk.CTkToplevel):
             corner_radius=13,
             command=self.ejecutar_rutina,
         )
-        boton_ejecutar.grid(row=0, column=2, sticky="nsew", padx=2, pady=2)
+        boton_ejecutar.grid(row=0, column=2, sticky="nsew", padx=0, pady=0)
 
         boton_detener_subrutina = ctk.CTkButton(
             self.frame_boton_ejecutar,
@@ -231,7 +233,7 @@ class ModoAutomatico(ctk.CTkToplevel):
             corner_radius=13,
             command=self.detener_rutina,
         )
-        boton_detener_subrutina.grid(row=0, column=3, sticky="nsew", padx=2, pady=2)
+        boton_detener_subrutina.grid(row=0, column=3, sticky="nsew", padx=0, pady=0)
 
     # ------------------------------
     # Reproducción de video
