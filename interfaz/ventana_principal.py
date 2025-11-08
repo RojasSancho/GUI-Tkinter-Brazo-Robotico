@@ -186,6 +186,12 @@ def ejecutar_app():
     )
     switch_apariencia.grid(row=0, column=0, pady=20, padx=20)
 
+    def actualizar_led():
+        toggle_led()  # Reusa tu función existente
+        ventana.after(1000, actualizar_led)  # Vuelve a revisar cada segundo
+
+    actualizar_led()
+
     ventana.mainloop()
 
 

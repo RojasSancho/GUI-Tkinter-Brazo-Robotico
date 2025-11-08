@@ -2,13 +2,14 @@ import serial.tools.list_ports
 
 
 """Para depurar, indica que dispositivos estan conectados en los puertos """
-#print("Puertos siendo utilizados:")
-#puertos = serial.tools.list_ports.comports()
-#for puerto in puertos:
+# print("Puertos siendo utilizados:")
+# puertos = serial.tools.list_ports.comports()
+# for puerto in puertos:
 #    print(puerto)
 
+
 class ArduinoDetector:
-    #Clase para detectar si un Arduino está conectado.
+    # Clase para detectar si un Arduino está conectado.
 
     def __init__(self):
         self.puerto = None
@@ -18,7 +19,12 @@ class ArduinoDetector:
         puertos = serial.tools.list_ports.comports()
 
         for puerto in puertos:
-            if "USB" in puerto.description or "Dispositivo serie" in puerto.description:
+            descripcion = puerto.description.lower()
+            if (
+                "arduino" in descripcion
+                or "usb serial" in descripcion
+                or "dispositivo serie" in descripcion
+            ):
                 self.puerto = puerto.device
                 print("Arduino detectado en", self.puerto)
                 return True
@@ -27,7 +33,5 @@ class ArduinoDetector:
         return False
 
     def obtener_puerto(self):
-        #Devuelve el puerto del Arduino si esta conectado
+        # Devuelve el puerto del Arduino si esta conectado
         return self.puerto
-
-
