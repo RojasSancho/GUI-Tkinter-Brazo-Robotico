@@ -57,15 +57,18 @@ class ModoAutomatico(ctk.CTkToplevel):
         # ------------------------------
         # Fila 2: descripción
         self.frame_descripcion = ctk.CTkFrame(
-            self.frame_central, height=200, fg_color="white"
+            self.frame_central, fg_color="transparent"
         )
         self.frame_descripcion.grid(row=2, column=0, padx=10, pady=5, sticky="nsew")
+        self.frame_descripcion.grid_rowconfigure(0, weight=1)
+        self.frame_descripcion.grid_columnconfigure(0, weight=1)
 
         # Fila 3: número de repeticiones
         self.frame_numero_repeticiones = ctk.CTkFrame(self.frame_central, height=100)
         self.frame_numero_repeticiones.grid(
-            row=3, column=0, padx=10, pady=5, sticky="nsew"
+            row=3, column=0, padx=10, pady=10, sticky="nsew"
         )
+        self.frame_numero_repeticiones.grid_columnconfigure(0, weight=1)
 
         # Fila 4: spinner
         self.frame_spinner = ctk.CTkFrame(self.frame_central, fg_color="transparent")
@@ -132,7 +135,7 @@ class ModoAutomatico(ctk.CTkToplevel):
 
     def mostrar_informacion_subrutina(self, choice):
         textos = {
-            "Rutina 1": "Rutina 1 realiza estas acciones",
+            "Rutina 1": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeo",
             "Rutina 2": "Rutina 2 realiza estas acciones",
             "Rutina 3": "Rutina 3 realiza estas acciones",
             "Rutina 4": "Rutina 4 realiza estas acciones",
@@ -189,7 +192,9 @@ class ModoAutomatico(ctk.CTkToplevel):
             text="Número de repeticiones de subrutina",
             font=("Bebas Neue", 30),
         )
-        label_numero_repeticiones.grid(row=0, column=1, padx=50, pady=5, sticky="nsew")
+        label_numero_repeticiones.grid(
+            row=0, column=0, columnspan=3, padx=10, pady=10, sticky="nsew"
+        )
 
         # Entrada numérica y botones del spinner
         self.frame_spinner.grid_rowconfigure(0, weight=1)
@@ -203,17 +208,17 @@ class ModoAutomatico(ctk.CTkToplevel):
             height=40,
             justify="center",
         )
-        entrada_numero.grid(row=0, column=0, sticky="nsew", padx=0, pady=0)
+        entrada_numero.grid(row=0, column=0, sticky="nsew", padx=5, pady=0)
 
         boton_up = ctk.CTkButton(
             self.frame_spinner, text="▲", height=40, command=self.aumentar
         )
-        boton_up.grid(row=0, column=1, sticky="nsew", padx=0, pady=0)
+        boton_up.grid(row=0, column=1, sticky="nsew", padx=5, pady=0)
 
         boton_down = ctk.CTkButton(
             self.frame_spinner, text="▼", height=40, command=self.disminuir
         )
-        boton_down.grid(row=0, column=2, sticky="nsew", padx=0, pady=0)
+        boton_down.grid(row=0, column=2, sticky="nsew", padx=5, pady=0)
 
         # Botones ejecutar y detener
         self.frame_boton_ejecutar.grid_rowconfigure(0, weight=1)
