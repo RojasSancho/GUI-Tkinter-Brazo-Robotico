@@ -142,8 +142,10 @@ class ModoAutomatico(ctk.CTkToplevel):
         }
         texto = textos.get(choice, "No hay información disponible")
         self.descripcion_subrutina_elegida.set(texto)
+        self.cajaTexto.configure(state="normal")
         self.cajaTexto.delete("0.0", "end")
         self.cajaTexto.insert("0.0", texto)
+        self.cajaTexto.configure(state="disabled")
 
     def aumentar(self):
         self.numero_var.set(self.numero_var.get() + 1)
@@ -176,15 +178,21 @@ class ModoAutomatico(ctk.CTkToplevel):
             self.frame_central,
             values=["Rutina 1", "Rutina 2", "Rutina 3", "Rutina 4"],
             font=("Bebas Neue", 30),
-            height=70,
+            height=60,
             command=self.optionmenu_callback,
         )
         menu_desplegable.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
 
         # Caja de texto descripción
-        self.cajaTexto = ctk.CTkTextbox(self.frame_descripcion, corner_radius=0)
+        self.cajaTexto = ctk.CTkTextbox(
+            self.frame_descripcion,
+            corner_radius=13,
+            height=185,
+            font=("Bebas Neue", 17),
+        )
         self.cajaTexto.grid(row=0, column=0, sticky="nsew")
         self.cajaTexto.insert("0.0", self.descripcion_subrutina_elegida.get())
+        self.cajaTexto.configure(state="disabled")
 
         # Label número de repeticiones
         label_numero_repeticiones = ctk.CTkLabel(
