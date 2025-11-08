@@ -157,7 +157,6 @@ def ejecutar_app():
         bg=ventana.cget("bg"),
     )
     canvas_led_conexion.grid(row=0, column=0, pady=10)
-    canvas_led_conexion.bind("<Button-1>", actualizar_estado_led)
 
     led_conexion = canvas_led_conexion.create_oval(5, 5, 35, 35, fill="red")
 
