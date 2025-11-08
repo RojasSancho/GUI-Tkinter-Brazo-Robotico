@@ -9,16 +9,14 @@ from interfaz.modo_automatico import ModoAutomatico
 # Variables de estado
 # ------------------------------
 modo_actual = None  # "MANUAL" o "RUTINA"
-arduino_conectado = False  # Indicador de conexión (simulado aquí)
 
 ctk.set_appearance_mode("light")
 ctk.set_default_color_theme("dark-blue")
 
+
 # ------------------------------
 # Funciones auxiliares
 # ------------------------------
-
-
 def activar_manual():
     global modo_actual
     respuesta = messagebox.askyesno("Confirmación", "¿Activar modo manual?")
@@ -65,9 +63,9 @@ def ejecutar_app():
     detector = ArduinoDetector()
 
     # ------------------------------
-    # Función para toggle LED de conexión
+    # Función para actualizar LED de conexión
     # ------------------------------
-    def toggle_led(event=None):
+    def actualizar_estado_led(event=None):
         if detector.detectar():
             canvas_led_conexion.itemconfig(led_conexion, fill="green")
             label_led.configure(text=f"Conectado en {detector.obtener_puerto()}")
@@ -159,7 +157,7 @@ def ejecutar_app():
         bg=ventana.cget("bg"),
     )
     canvas_led_conexion.grid(row=0, column=0, pady=10)
-    canvas_led_conexion.bind("<Button-1>", toggle_led)
+    canvas_led_conexion.bind("<Button-1>", actualizar_estado_led)
 
     led_conexion = canvas_led_conexion.create_oval(5, 5, 35, 35, fill="red")
 
@@ -187,7 +185,7 @@ def ejecutar_app():
     switch_apariencia.grid(row=0, column=0, pady=20, padx=20)
 
     def actualizar_led():
-        toggle_led()  # Reusa tu función existente
+        actualizar_estado_led()
         ventana.after(1000, actualizar_led)  # Vuelve a revisar cada segundo
 
     actualizar_led()
