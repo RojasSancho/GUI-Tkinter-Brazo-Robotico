@@ -1,6 +1,5 @@
 import tkinter as tk
 import customtkinter as ctk
-from tkinter import messagebox
 from PIL import Image, ImageTk
 import cv2
 
@@ -8,14 +7,15 @@ import cv2
 class ModoAutomatico(ctk.CTkToplevel):
     def __init__(self, parent, volver_callback=None):
         super().__init__(parent)
-        self.parent = parent  # ventana principal
+        self.parent = parent
         self.volver_callback = volver_callback
 
+        # ------------------------------
+        # Configuración de la ventana
+        # ------------------------------
         self.title("Modo Automático")
         self.state("zoomed")
         self.minsize(1366, 768)
-
-        # Manejar cierre con la X
         self.protocol("WM_DELETE_WINDOW", self.cerrar_completamente)
 
         # ------------------------------
@@ -40,41 +40,45 @@ class ModoAutomatico(ctk.CTkToplevel):
         self.grid_rowconfigure(1, weight=0)
         self.grid_columnconfigure(0, weight=1)
 
+        # ------------------------------
         # Frame central
+        # ------------------------------
         self.frame_central = ctk.CTkFrame(self)
         self.frame_central.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
-        self.frame_central.grid_rowconfigure(0, weight=0)
-        self.frame_central.grid_rowconfigure(1, weight=0)
-        self.frame_central.grid_rowconfigure(2, weight=0)
-        self.frame_central.grid_rowconfigure(3, weight=0)
-        self.frame_central.grid_rowconfigure(4, weight=1)
-        self.frame_central.grid_columnconfigure(1, weight=1)
-        for i in range(1, 5):
+
+        # Configuración de filas y columnas
+        for i in range(6):
             self.frame_central.grid_rowconfigure(i, weight=1)
+        self.frame_central.grid_columnconfigure(0, weight=1, uniform="col")
+        self.frame_central.grid_columnconfigure(1, weight=1, uniform="col")
 
-        # Frame descripción
+        # ------------------------------
+        # Frames principales de la columna izquierda
+        # ------------------------------
+        # Fila 2: descripción
         self.frame_descripcion = ctk.CTkFrame(
-            self.frame_central, width=340, height=200, fg_color="white"
+            self.frame_central, fg_color="transparent"
         )
-        self.frame_descripcion.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
+        self.frame_descripcion.grid(row=2, column=0, padx=10, pady=5, sticky="nsew")
+        self.frame_descripcion.grid_rowconfigure(0, weight=1)
+        self.frame_descripcion.grid_columnconfigure(0, weight=1)
 
-        # Frame número repeticiones
-        self.frame_numero_repeticiones = ctk.CTkFrame(
-            self.frame_central, width=340, height=100
-        )
+        # Fila 3: número de repeticiones
+        self.frame_numero_repeticiones = ctk.CTkFrame(self.frame_central, height=100)
         self.frame_numero_repeticiones.grid(
             row=3, column=0, padx=10, pady=10, sticky="nsew"
         )
+        self.frame_numero_repeticiones.grid_columnconfigure(0, weight=1)
 
-        # Frame spinner
+        # Fila 4: spinner
         self.frame_spinner = ctk.CTkFrame(self.frame_central, fg_color="transparent")
-        self.frame_spinner.grid(row=4, column=0, padx=20, pady=20, sticky="n")
+        self.frame_spinner.grid(row=4, column=0, padx=20, pady=10, sticky="nsew")
 
-        # Frame botón ejecutar y detener
+        # Fila 5: botones ejecutar y detener
         self.frame_boton_ejecutar = ctk.CTkFrame(
             self.frame_central, fg_color="transparent"
         )
-        self.frame_boton_ejecutar.grid(row=5, column=0, padx=20, pady=20, sticky="n")
+        self.frame_boton_ejecutar.grid(row=5, column=0, padx=20, pady=10, sticky="nsew")
 
         # ------------------------------
         # Frame inferior con botón volver
@@ -84,7 +88,6 @@ class ModoAutomatico(ctk.CTkToplevel):
         self.frame_inferior.grid_columnconfigure(0, weight=1)
         self.frame_inferior.grid_columnconfigure(1, weight=0)
 
-        # Botón volver al menú principal
         boton_volver = ctk.CTkButton(
             self.frame_inferior,
             text="Volver al menú principal",
@@ -97,19 +100,20 @@ class ModoAutomatico(ctk.CTkToplevel):
         boton_volver.grid(row=0, column=1, sticky="e")
 
         # ------------------------------
-        # Widgets de selección y control
+        # Widgets columna izquierda
         # ------------------------------
         self.crear_widgets()
 
-        # Frame donde se mostrará el video
+        # ------------------------------
+        # Frame de video (columna derecha)
+        # ------------------------------
         self.frame_video_player = ctk.CTkFrame(
-            self.frame_central, width=685, height=400, fg_color="white"
+            self.frame_central, height=400, fg_color="white"
         )
         self.frame_video_player.grid(
             row=1, column=1, rowspan=4, padx=10, pady=20, sticky="nsew"
         )
 
-        # Label que contendrá cada frame
         self.label_video = ctk.CTkLabel(
             self.frame_video_player, text="", fg_color="black"
         )
@@ -118,36 +122,36 @@ class ModoAutomatico(ctk.CTkToplevel):
         self.reproducir_video_prueba(r"videos\VideoTemu.mp4")
 
     # ------------------------------
-    # Métodos
+    # Métodos de control
     # ------------------------------
     def volver_al_menu(self):
         if self.volver_callback:
-            self.volver_callback()  # Llama a la función que muestra la ventana principal
-        self.destroy()  # Cierra esta ventana
+            self.volver_callback()
+        self.destroy()
 
     def optionmenu_callback(self, choice):
         self.subrutina_elegida.set(choice)
         self.mostrar_informacion_subrutina(choice)
-        # self.cambiar_video(choice)  # Si tienes videos activos
 
     def mostrar_informacion_subrutina(self, choice):
         textos = {
-            "Rutina 1": "Rutina 1 realiza estas acciones",
+            "Rutina 1": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeo",
             "Rutina 2": "Rutina 2 realiza estas acciones",
             "Rutina 3": "Rutina 3 realiza estas acciones",
             "Rutina 4": "Rutina 4 realiza estas acciones",
         }
         texto = textos.get(choice, "No hay información disponible")
         self.descripcion_subrutina_elegida.set(texto)
+        self.cajaTexto.configure(state="normal")
         self.cajaTexto.delete("0.0", "end")
         self.cajaTexto.insert("0.0", texto)
+        self.cajaTexto.configure(state="disabled")
 
     def aumentar(self):
         self.numero_var.set(self.numero_var.get() + 1)
 
     def disminuir(self):
-        valor = max(0, self.numero_var.get() - 1)
-        self.numero_var.set(valor)
+        self.numero_var.set(max(0, self.numero_var.get() - 1))
 
     def ejecutar_rutina(self):
         print(
@@ -157,32 +161,38 @@ class ModoAutomatico(ctk.CTkToplevel):
     def detener_rutina(self):
         print(f"Se detendrá la: {self.subrutina_elegida.get()}")
 
+    # ------------------------------
+    # Widgets
+    # ------------------------------
     def crear_widgets(self):
-        # Label menú
+        # Fila 0: título
         label_subrutinas = ctk.CTkLabel(
             self.frame_central,
-            text="Menú \n de subrutinas pre-programadas",
+            text="Menú de \n subrutinas pre-programadas",
             font=("Bebas Neue", 30),
         )
-        label_subrutinas.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
+        label_subrutinas.grid(row=0, column=0, padx=20, pady=10, sticky="nsew")
 
-        # Menú desplegable
+        # Fila 1: menú desplegable
         menu_desplegable = ctk.CTkOptionMenu(
             self.frame_central,
             values=["Rutina 1", "Rutina 2", "Rutina 3", "Rutina 4"],
             font=("Bebas Neue", 30),
-            width=600,
-            height=30,
+            height=60,
             command=self.optionmenu_callback,
         )
-        menu_desplegable.grid(row=1, column=0, padx=20, pady=20, sticky="nw")
+        menu_desplegable.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
 
-        # Caja de texto con la descripción
+        # Caja de texto descripción
         self.cajaTexto = ctk.CTkTextbox(
-            self.frame_descripcion, width=300, corner_radius=0
+            self.frame_descripcion,
+            corner_radius=13,
+            height=185,
+            font=("Bebas Neue", 17),
         )
         self.cajaTexto.grid(row=0, column=0, sticky="nsew")
         self.cajaTexto.insert("0.0", self.descripcion_subrutina_elegida.get())
+        self.cajaTexto.configure(state="disabled")
 
         # Label número de repeticiones
         label_numero_repeticiones = ctk.CTkLabel(
@@ -190,53 +200,62 @@ class ModoAutomatico(ctk.CTkToplevel):
             text="Número de repeticiones de subrutina",
             font=("Bebas Neue", 30),
         )
-        label_numero_repeticiones.grid(row=0, column=1, padx=50, pady=20, sticky="nsew")
+        label_numero_repeticiones.grid(
+            row=0, column=0, columnspan=3, padx=10, pady=10, sticky="nsew"
+        )
 
-        # Entrada numérica
+        # Entrada numérica y botones del spinner
+        self.frame_spinner.grid_rowconfigure(0, weight=1)
+        for col in range(3):
+            self.frame_spinner.grid_columnconfigure(col, weight=1)
+
         entrada_numero = ctk.CTkEntry(
             self.frame_spinner,
             textvariable=self.numero_var,
             width=120,
+            height=40,
             justify="center",
         )
-        entrada_numero.grid(row=0, column=0, padx=20, pady=20)
+        entrada_numero.grid(row=0, column=0, sticky="nsew", padx=5, pady=0)
 
-        # Botón aumentar
         boton_up = ctk.CTkButton(
-            self.frame_spinner, text="▲", width=110, command=self.aumentar
+            self.frame_spinner, text="▲", height=40, command=self.aumentar
         )
-        boton_up.grid(row=0, column=1, padx=2, pady=20)
+        boton_up.grid(row=0, column=1, sticky="nsew", padx=5, pady=0)
 
-        # Botón disminuir
         boton_down = ctk.CTkButton(
-            self.frame_spinner, text="▼", width=110, command=self.disminuir
+            self.frame_spinner, text="▼", height=40, command=self.disminuir
         )
-        boton_down.grid(row=0, column=2, padx=2, pady=20)
+        boton_down.grid(row=0, column=2, sticky="nsew", padx=5, pady=0)
 
-        # Botón ejecutar
+        # Botones ejecutar y detener
+        self.frame_boton_ejecutar.grid_rowconfigure(0, weight=1)
+        for col in range(4):
+            self.frame_boton_ejecutar.grid_columnconfigure(col, weight=1)
+
         boton_ejecutar = ctk.CTkButton(
             self.frame_boton_ejecutar,
             text="Ejecutar",
             font=("Bebas Neue", 30),
-            width=110,
-            height=30,
             corner_radius=13,
+            height=60,
             command=self.ejecutar_rutina,
         )
-        boton_ejecutar.grid(row=0, column=2, padx=2, pady=2)
+        boton_ejecutar.grid(row=0, column=1, sticky="nsew", padx=5, pady=0)
 
-        # Botón detener
         boton_detener_subrutina = ctk.CTkButton(
             self.frame_boton_ejecutar,
             text="Detener",
             font=("Bebas Neue", 30),
-            width=110,
-            height=30,
             corner_radius=13,
+            height=60,
             command=self.detener_rutina,
         )
-        boton_detener_subrutina.grid(row=0, column=3, padx=2, pady=2)
+        boton_detener_subrutina.grid(row=0, column=2, sticky="nsew", padx=5, pady=0)
 
+    # ------------------------------
+    # Reproducción de video
+    # ------------------------------
     def reproducir_video_prueba(self, ruta_video):
         self.cap = cv2.VideoCapture(ruta_video)
 
@@ -250,7 +269,6 @@ class ModoAutomatico(ctk.CTkToplevel):
                 self.cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
                 ret, frame = self.cap.read()
 
-            self.label_video.update_idletasks()
             ancho_label = self.label_video.winfo_width()
             alto_label = self.label_video.winfo_height()
 
@@ -266,16 +284,13 @@ class ModoAutomatico(ctk.CTkToplevel):
             frame = cv2.resize(frame, (nuevo_ancho, nuevo_alto))
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-            # Crear fondo negro y pegar video centrado
             fondo = Image.new("RGB", (ancho_label, alto_label), color=(0, 0, 0))
             fondo.paste(
                 Image.fromarray(frame),
                 ((ancho_label - nuevo_ancho) // 2, (alto_label - nuevo_alto) // 2),
             )
 
-            # Convertir a PhotoImage para Tkinter
             img_final = ImageTk.PhotoImage(fondo)
-
             self.label_video.configure(image=img_final)
             self.label_video.image = img_final
 

@@ -29,5 +29,5 @@ class ArduinoDetector:
     def obtener_puerto(self):
         #Devuelve el puerto del Arduino si esta conectado
         return self.puerto
-    
+
 
