@@ -59,23 +59,23 @@ class ModoAutomatico(ctk.CTkToplevel):
         self.frame_descripcion = ctk.CTkFrame(
             self.frame_central, height=200, fg_color="white"
         )
-        self.frame_descripcion.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
+        self.frame_descripcion.grid(row=2, column=0, padx=10, pady=5, sticky="nsew")
 
         # Fila 3: número de repeticiones
         self.frame_numero_repeticiones = ctk.CTkFrame(self.frame_central, height=100)
         self.frame_numero_repeticiones.grid(
-            row=3, column=0, padx=10, pady=10, sticky="nsew"
+            row=3, column=0, padx=10, pady=5, sticky="nsew"
         )
 
         # Fila 4: spinner
         self.frame_spinner = ctk.CTkFrame(self.frame_central, fg_color="transparent")
-        self.frame_spinner.grid(row=4, column=0, padx=20, pady=20, sticky="nsew")
+        self.frame_spinner.grid(row=4, column=0, padx=20, pady=10, sticky="nsew")
 
         # Fila 5: botones ejecutar y detener
         self.frame_boton_ejecutar = ctk.CTkFrame(
             self.frame_central, fg_color="transparent"
         )
-        self.frame_boton_ejecutar.grid(row=5, column=0, padx=20, pady=20, sticky="nsew")
+        self.frame_boton_ejecutar.grid(row=5, column=0, padx=20, pady=10, sticky="nsew")
 
         # ------------------------------
         # Frame inferior con botón volver
@@ -163,20 +163,20 @@ class ModoAutomatico(ctk.CTkToplevel):
         # Fila 0: título
         label_subrutinas = ctk.CTkLabel(
             self.frame_central,
-            text="Menú \n de subrutinas pre-programadas",
+            text="Menú de \n subrutinas pre-programadas",
             font=("Bebas Neue", 30),
         )
-        label_subrutinas.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
+        label_subrutinas.grid(row=0, column=0, padx=20, pady=10, sticky="nsew")
 
         # Fila 1: menú desplegable
         menu_desplegable = ctk.CTkOptionMenu(
             self.frame_central,
             values=["Rutina 1", "Rutina 2", "Rutina 3", "Rutina 4"],
             font=("Bebas Neue", 30),
-            height=5,
+            height=70,
             command=self.optionmenu_callback,
         )
-        menu_desplegable.grid(row=1, column=0, padx=20, pady=20, sticky="nsew")
+        menu_desplegable.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
 
         # Caja de texto descripción
         self.cajaTexto = ctk.CTkTextbox(self.frame_descripcion, corner_radius=0)
@@ -189,7 +189,7 @@ class ModoAutomatico(ctk.CTkToplevel):
             text="Número de repeticiones de subrutina",
             font=("Bebas Neue", 30),
         )
-        label_numero_repeticiones.grid(row=0, column=1, padx=50, pady=20, sticky="nsew")
+        label_numero_repeticiones.grid(row=0, column=1, padx=50, pady=5, sticky="nsew")
 
         # Entrada numérica y botones del spinner
         self.frame_spinner.grid_rowconfigure(0, weight=1)
@@ -200,17 +200,20 @@ class ModoAutomatico(ctk.CTkToplevel):
             self.frame_spinner,
             textvariable=self.numero_var,
             width=120,
-            height = 40,
+            height=40,
             justify="center",
         )
         entrada_numero.grid(row=0, column=0, sticky="nsew", padx=0, pady=0)
 
-        boton_up = ctk.CTkButton(self.frame_spinner, text="▲", height = 40, command=self.aumentar)
+        boton_up = ctk.CTkButton(
+            self.frame_spinner, text="▲", height=40, command=self.aumentar
+        )
         boton_up.grid(row=0, column=1, sticky="nsew", padx=0, pady=0)
 
-        boton_down = ctk.CTkButton(self.frame_spinner, text="▼", height = 40, command=self.disminuir)
+        boton_down = ctk.CTkButton(
+            self.frame_spinner, text="▼", height=40, command=self.disminuir
+        )
         boton_down.grid(row=0, column=2, sticky="nsew", padx=0, pady=0)
-
 
         # Botones ejecutar y detener
         self.frame_boton_ejecutar.grid_rowconfigure(0, weight=1)
@@ -222,18 +225,20 @@ class ModoAutomatico(ctk.CTkToplevel):
             text="Ejecutar",
             font=("Bebas Neue", 30),
             corner_radius=13,
+            height=60,
             command=self.ejecutar_rutina,
         )
-        boton_ejecutar.grid(row=0, column=2, sticky="nsew", padx=0, pady=0)
+        boton_ejecutar.grid(row=0, column=1, sticky="nsew", padx=5, pady=0)
 
         boton_detener_subrutina = ctk.CTkButton(
             self.frame_boton_ejecutar,
             text="Detener",
             font=("Bebas Neue", 30),
             corner_radius=13,
+            height=60,
             command=self.detener_rutina,
         )
-        boton_detener_subrutina.grid(row=0, column=3, sticky="nsew", padx=0, pady=0)
+        boton_detener_subrutina.grid(row=0, column=2, sticky="nsew", padx=5, pady=0)
 
     # ------------------------------
     # Reproducción de video
