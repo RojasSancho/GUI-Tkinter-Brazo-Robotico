@@ -27,11 +27,13 @@ class ModoAutomatico(ctk.CTkToplevel):
         )
         self.numero_var = ctk.IntVar(value=0)
         self.videos = {
-            "Rutina 1": "video1.mp4",
-            "Rutina 2": "video2.mp4",
-            "Rutina 3": "video3.mp4",
-            "Rutina 4": "video4.mp4",
+            "Rutina 1": r"videos\VideoTemu.mp4",
+            "Rutina 2": r"videos\Terabyte-VideoTempFinal.mp4",
+            "Rutina 3": r"videos\prueba2.mp4",
+            "Rutina 4": r"videos\Terabyte-VideoTempFinal.mp4",
         }
+
+        self.cap = None
 
         # ------------------------------
         # Layout principal
@@ -119,7 +121,7 @@ class ModoAutomatico(ctk.CTkToplevel):
         )
         self.label_video.pack(expand=True, fill="both")
 
-        self.reproducir_video_prueba(r"videos\VideoTemu.mp4")
+        self.reproducir_video(r"videos\VideoTemu.mp4")
 
     # ------------------------------
     # Métodos de control
@@ -132,6 +134,14 @@ class ModoAutomatico(ctk.CTkToplevel):
     def optionmenu_callback(self, choice):
         self.subrutina_elegida.set(choice)
         self.mostrar_informacion_subrutina(choice)
+
+        # Detener video actual si hay uno
+
+        if self.cap is not None and self.cap.isOpened():
+            self.cap.release()
+
+        if ruta_video := self.videos.get(choice):
+            self.reproducir_video(ruta_video)
 
     def mostrar_informacion_subrutina(self, choice):
         textos = {
@@ -256,7 +266,16 @@ class ModoAutomatico(ctk.CTkToplevel):
     # ------------------------------
     # Reproducción de video
     # ------------------------------
-    def reproducir_video_prueba(self, ruta_video):
+    def reproducir_video(self, ruta_video):
+        # Cancelar ciclo anterior de actualización de frames
+        if hasattr(self, "after_id") and self.after_id:
+            self.after_cancel(self.after_id)
+            self.after_id = None
+
+        # Cerrar video anterior si hay uno abierto
+        if self.cap is not None and self.cap.isOpened():
+            self.cap.release()
+
         self.cap = cv2.VideoCapture(ruta_video)
 
         if not self.cap.isOpened():
@@ -268,6 +287,8 @@ class ModoAutomatico(ctk.CTkToplevel):
             if not ret:
                 self.cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
                 ret, frame = self.cap.read()
+                if not ret:
+                    return  # si sigue fallando, detiene el bucle
 
             ancho_label = self.label_video.winfo_width()
             alto_label = self.label_video.winfo_height()
@@ -294,18 +315,22 @@ class ModoAutomatico(ctk.CTkToplevel):
             self.label_video.configure(image=img_final)
             self.label_video.image = img_final
 
-            self.after(30, mostrar_frame)
+            # Guardar el id del ciclo para poder cancelarlo después
+            self.after_id = self.after(30, mostrar_frame)
 
         mostrar_frame()
 
     def cerrar_completamente(self):
+        # Detener la reproducción del video
+        if hasattr(self, "after_id") and self.after_id:
+            self.after_cancel(self.after_id)
+        if self.cap is not None and self.cap.isOpened():
+            self.cap.release()
+
         self.destroy()
         self.parent.destroy()
 
 
-# ------------------------------
-# Prueba rápida
-# ------------------------------
 if __name__ == "__main__":
     root = ctk.CTk()
     root.title("Ventana principal simulada")

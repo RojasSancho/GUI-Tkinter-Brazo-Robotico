@@ -13,7 +13,6 @@ modo_actual = None  # "MANUAL" o "RUTINA"
 ctk.set_appearance_mode("light")
 ctk.set_default_color_theme("dark-blue")
 
-
 # ------------------------------
 # Funciones auxiliares
 # ------------------------------
@@ -49,7 +48,6 @@ def activar_salir(ventana):
     respuesta = messagebox.askyesno("Confirmación", "¿Deseas salir de la aplicación?")
     if respuesta:
         ventana.destroy()
-
 
 # ------------------------------
 # Ejecutar aplicación
@@ -190,7 +188,6 @@ def ejecutar_app():
     actualizar_led()
 
     ventana.mainloop()
-
 
 if __name__ == "__main__":
     ejecutar_app()
