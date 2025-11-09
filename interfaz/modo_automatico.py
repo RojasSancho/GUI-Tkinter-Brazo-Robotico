@@ -2,6 +2,8 @@ import tkinter as tk
 import customtkinter as ctk
 from PIL import Image, ImageTk
 import cv2
+from hardware.arduino_detector import ArduinoDetector
+import serial
 
 
 class ModoAutomatico(ctk.CTkToplevel):
@@ -9,6 +11,7 @@ class ModoAutomatico(ctk.CTkToplevel):
         super().__init__(parent)
         self.parent = parent
         self.volver_callback = volver_callback
+        self.revisando_conexion = False
 
         # ------------------------------
         # Configuración de la ventana
@@ -121,7 +124,7 @@ class ModoAutomatico(ctk.CTkToplevel):
         )
         self.label_video.pack(expand=True, fill="both")
 
-        self.reproducir_video(r"videos\VideoTemu.mp4")
+        # self.reproducir_video(r"videos\VideoTemu.mp4")
 
     # ------------------------------
     # Métodos de control
@@ -327,6 +330,8 @@ class ModoAutomatico(ctk.CTkToplevel):
         if self.cap is not None and self.cap.isOpened():
             self.cap.release()
 
+        self.revisando_conexion = False
+        self.arduino_detector.cerrar()
         self.destroy()
         self.parent.destroy()
 

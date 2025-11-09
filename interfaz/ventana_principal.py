@@ -13,6 +13,7 @@ modo_actual = None  # "MANUAL" o "RUTINA"
 ctk.set_appearance_mode("light")
 ctk.set_default_color_theme("dark-blue")
 
+
 # ------------------------------
 # Funciones auxiliares
 # ------------------------------
@@ -49,6 +50,7 @@ def activar_salir(ventana):
     if respuesta:
         ventana.destroy()
 
+
 # ------------------------------
 # Ejecutar aplicación
 # ------------------------------
@@ -59,6 +61,8 @@ def ejecutar_app():
     ventana.minsize(800, 600)
 
     detector = ArduinoDetector()
+    estado_arduino_anterior = detector.estado_arduino
+    ventana.after(2000, lambda: intentar_conexion_inicial(detector))
 
     # ------------------------------
     # Función para actualizar LED de conexión
@@ -181,13 +185,52 @@ def ejecutar_app():
     )
     switch_apariencia.grid(row=0, column=0, pady=20, padx=20)
 
+    def intentar_conexion_inicial(detector):
+        if detector.detectar():
+            detector.conectar()
+
     def actualizar_led():
-        actualizar_estado_led()
-        ventana.after(1000, actualizar_led)  # Vuelve a revisar cada segundo
+        nonlocal estado_arduino_anterior
+
+        puerto_detectado = detector.detectar()
+        puerto_actual = detector.obtener_puerto()
+
+        if puerto_detectado:
+            # Intentar reconectar solo si no está conectado
+            if not detector.esta_conectado():
+                if estado_arduino_anterior != "conectando":
+                    estado_arduino_anterior = "conectando"
+                    print("Intentando reconectar a Arduino...")
+                    if detector.conectar():
+                        print("Reconexión exitosa.")
+                        estado_arduino_anterior = "conectado"
+
+            # Actualizar LED y etiqueta solo si cambió el estado
+            if estado_arduino_anterior != "conectado":
+                canvas_led_conexion.itemconfig(led_conexion, fill="green")
+                label_led.configure(text=f"Conectado en {puerto_actual}")
+                estado_arduino_anterior = "conectado"
+            else:
+                # Ya estaba conectado, solo aseguramos LED verde
+                canvas_led_conexion.itemconfig(led_conexion, fill="green")
+                label_led.configure(text=f"Conectado en {puerto_actual}")
+
+        else:
+            # Si antes estaba conectado, cerrar y mostrar desconectado
+            if estado_arduino_anterior != "desconectado":
+                if detector.esta_conectado():
+                    detector.cerrar()
+                print("Arduino desconectado.")
+                canvas_led_conexion.itemconfig(led_conexion, fill="red")
+                label_led.configure(text="Desconectado")
+                estado_arduino_anterior = "desconectado"
+
+        ventana.after(1000, actualizar_led)
 
     actualizar_led()
 
     ventana.mainloop()
+
 
 if __name__ == "__main__":
     ejecutar_app()
