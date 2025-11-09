@@ -122,3 +122,13 @@ class ArduinoDetector:
     def esta_conectado(self):
         """Devuelve True si la conexión serie con el Arduino está activa."""
         return self.conexion is not None and self.conexion.is_open
+
+    def actualizar_estado(self):
+        """
+        Revisa si el Arduino sigue conectado, intenta reconectar si es necesario,
+        y devuelve el estado actual: 'conectado' o 'desconectado'.
+        """
+        if self.revisar_conexion():  # revisa y reconecta si hace falta
+            return "conectado"
+        else:
+            return "desconectado"

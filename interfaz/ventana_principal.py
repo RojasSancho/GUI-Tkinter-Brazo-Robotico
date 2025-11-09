@@ -189,45 +189,19 @@ def ejecutar_app():
         if detector.detectar():
             detector.conectar()
 
-    def actualizar_led():
-        nonlocal estado_arduino_anterior
+    def actualizar_led_gui():
+        estado = detector.actualizar_estado()  # devuelve "conectado" o "desconectado"
 
-        puerto_detectado = detector.detectar()
-        puerto_actual = detector.obtener_puerto()
-
-        if puerto_detectado:
-            # Intentar reconectar solo si no está conectado
-            if not detector.esta_conectado():
-                if estado_arduino_anterior != "conectando":
-                    estado_arduino_anterior = "conectando"
-                    print("Intentando reconectar a Arduino...")
-                    if detector.conectar():
-                        print("Reconexión exitosa.")
-                        estado_arduino_anterior = "conectado"
-
-            # Actualizar LED y etiqueta solo si cambió el estado
-            if estado_arduino_anterior != "conectado":
-                canvas_led_conexion.itemconfig(led_conexion, fill="green")
-                label_led.configure(text=f"Conectado en {puerto_actual}")
-                estado_arduino_anterior = "conectado"
-            else:
-                # Ya estaba conectado, solo aseguramos LED verde
-                canvas_led_conexion.itemconfig(led_conexion, fill="green")
-                label_led.configure(text=f"Conectado en {puerto_actual}")
-
+        if estado == "conectado":
+            canvas_led_conexion.itemconfig(led_conexion, fill="green")
+            label_led.configure(text=f"Conectado en {detector.obtener_puerto()}")
         else:
-            # Si antes estaba conectado, cerrar y mostrar desconectado
-            if estado_arduino_anterior != "desconectado":
-                if detector.esta_conectado():
-                    detector.cerrar()
-                print("Arduino desconectado.")
-                canvas_led_conexion.itemconfig(led_conexion, fill="red")
-                label_led.configure(text="Desconectado")
-                estado_arduino_anterior = "desconectado"
+            canvas_led_conexion.itemconfig(led_conexion, fill="red")
+            label_led.configure(text="Desconectado")
 
-        ventana.after(1000, actualizar_led)
+        ventana.after(1000, actualizar_led_gui)
 
-    actualizar_led()
+    actualizar_led_gui()
 
     ventana.mainloop()
 
