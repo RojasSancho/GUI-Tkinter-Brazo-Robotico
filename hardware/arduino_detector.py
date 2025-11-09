@@ -33,12 +33,14 @@ class ArduinoDetector:
             ):
                 if self.puerto != puerto.device:
                     self.puerto = puerto.device
+                    print("--------------------------")
                     print("Arduino detectado en", self.puerto)
                 return True
 
         # Si antes había uno conectado y ya no
 
         if self.estado_arduino != "desconectado":
+            print("---------------------")
             print("Arduino desconectado.")
             self.estado_arduino = "desconectado"
             self.puerto = None
@@ -56,11 +58,10 @@ class ArduinoDetector:
         # Cerrar conexión previa si sigue abierta
         if self.conexion and self.conexion.is_open:
             self.conexion.close()
-            time.sleep(0.5)
 
         try:
             self.conexion = serial.Serial(self.puerto, baudrate, timeout=timeout)
-            time.sleep(2)
+            # time.sleep(2)
             self.estado_arduino = "conectado"
             print(f"Conectado al Arduino en {self.puerto}")
             print("Arduino conectado correctamente.")
@@ -98,6 +99,7 @@ class ArduinoDetector:
         # Si el puerto desapareció, desconexión
         if self.puerto and self.puerto not in puertos_actuales:
             if self.estado_arduino != "desconectado":
+                print("---------------------")
                 print("Arduino desconectado.")
                 self.cerrar()
             self.puerto = None
@@ -114,6 +116,7 @@ class ArduinoDetector:
                     return True
         elif not self.detectar():
             if self.estado_arduino != "desconectado":
+                print("---------------------")
                 print("Arduino desconectado.")
                 self.estado_arduino = "desconectado"
 
