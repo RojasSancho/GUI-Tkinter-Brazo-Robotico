@@ -4,6 +4,7 @@ from tkinter import messagebox
 
 from hardware.arduino_detector import ArduinoDetector
 from interfaz.modo_automatico import ModoAutomatico
+from interfaz.modo_manual import ModoManual
 
 # ------------------------------
 # Variables de estado
@@ -17,12 +18,20 @@ ctk.set_default_color_theme("dark-blue")
 # ------------------------------
 # Funciones auxiliares
 # ------------------------------
-def activar_manual():
+def abrir_modo_manual(ventana, frame_inferior):
     global modo_actual
     respuesta = messagebox.askyesno("Confirmación", "¿Activar modo manual?")
     if respuesta:
-        print("Modo Manual activado")
         modo_actual = "MANUAL"
+        ventana.withdraw()  # Ocultar ventana principal
+
+        def volver_al_principal():
+            ventana.state("zoomed")  # Maximizar primero
+            ventana.update_idletasks()  # Forzar redibujo
+            ventana.deiconify()  # Muestra de nuevo
+
+        # Abrir ventana de modo manual
+        ModoManual(parent=ventana, volver_callback=volver_al_principal)
     else:
         print("Modo Manual cancelado")
 
@@ -37,7 +46,7 @@ def abrir_modo_rutina(ventana, frame_inferior):
         def volver_al_principal():
             ventana.state("zoomed")  # Maximizar primero
             ventana.update_idletasks()  # Forzar redibujo
-            ventana.deiconify()
+            ventana.deiconify()  # Muestra de nuevo
 
         # Abrir ventana modo automático
         ModoAutomatico(parent=ventana, volver_callback=volver_al_principal)
@@ -137,7 +146,7 @@ def ejecutar_app():
         width=365,
         height=60,
         corner_radius=13,
-        command=activar_manual,
+        command=lambda: abrir_modo_manual(ventana, frame_inferior),
     )
     boton_manual.grid(row=2, column=0, pady=10)
 
