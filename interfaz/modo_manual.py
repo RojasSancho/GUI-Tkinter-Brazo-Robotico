@@ -2,6 +2,7 @@ import tkinter as tk
 import customtkinter as ctk
 import numpy as np
 import matplotlib
+
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from mpl_toolkits.mplot3d import Axes3D
@@ -13,7 +14,6 @@ import matplotlib.pyplot as plt
 # ------------------------------
 class ModoManual(ctk.CTkToplevel):
     def __init__(self, parent, volver_callback=None):
-
         """
         L1: altura base, simbolico por que en realida es la base
         L2: longitud primer segmento
@@ -38,7 +38,7 @@ class ModoManual(ctk.CTkToplevel):
         self.grid_rowconfigure(1, weight=0)
         self.grid_columnconfigure(0, weight=1)
 
-        #Frame central
+        # Frame central
         self.frame_central = ctk.CTkFrame(self)
         self.frame_central.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
 
@@ -48,33 +48,39 @@ class ModoManual(ctk.CTkToplevel):
         self.frame_central.grid_columnconfigure(0, weight=0)
         self.frame_central.grid_columnconfigure(1, weight=1)
 
-        #Frame de los controles (sliders horizontales)
-        self.frame_scroll_control = ctk.CTkFrame(self.frame_central, width=340, height=400)
-        self.frame_scroll_control.grid(row=1, column=0, rowspan=3, padx=10, pady=10, sticky="nsew")
+        # Frame de los controles (sliders horizontales)
+        self.frame_scroll_control = ctk.CTkFrame(
+            self.frame_central, width=340, height=400
+        )
+        self.frame_scroll_control.grid(
+            row=1, column=0, rowspan=3, padx=10, pady=10, sticky="nsew"
+        )
         self.frame_scroll_control.grid_columnconfigure(0, weight=100)
-        
-        #Permite crecimiento de filas
+
+        # Permite crecimiento de filas
         for i in range(20):  # muchas filas
             self.frame_scroll_control.grid_rowconfigure(i, weight=1)
             self.frame_scroll_control.grid_columnconfigure(0, weight=1)
 
         # Frame diagrama (diagrama en 3d)
         self.frame_diagrama = ctk.CTkFrame(self.frame_central)
-        self.frame_diagrama.grid(row=1, column=1, rowspan=3, padx=10, pady=10, sticky="nsew")
+        self.frame_diagrama.grid(
+            row=1, column=1, rowspan=3, padx=10, pady=10, sticky="nsew"
+        )
 
-        #Label superior
-        label_controles= ctk.CTkLabel(
+        # Label superior
+        label_controles = ctk.CTkLabel(
             self.frame_central,
             text="Controles de Servomotores (grados)",
-            font=("Bebas Neue", 30)
+            font=("Bebas Neue", 30),
         )
         label_controles.grid(row=0, column=0, padx=20, pady=20, sticky="nw")
-        
-        #Label superior
-        label_diagrama= ctk.CTkLabel(
+
+        # Label superior
+        label_diagrama = ctk.CTkLabel(
             self.frame_central,
             text="Diagrama esqueleto brazo robótico en 3D",
-            font=("Bebas Neue", 30)
+            font=("Bebas Neue", 30),
         )
         label_diagrama.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
 
@@ -86,7 +92,7 @@ class ModoManual(ctk.CTkToplevel):
         self.frame_inferior.grid_columnconfigure(0, weight=1)
         self.frame_inferior.grid_columnconfigure(1, weight=0)
 
-        #Botón para volver al menu principal
+        # Botón para volver al menu principal
         boton_volver = ctk.CTkButton(
             self.frame_inferior,
             text="Volver al menú principal",
@@ -98,26 +104,26 @@ class ModoManual(ctk.CTkToplevel):
         )
         boton_volver.grid(row=0, column=1, sticky="e")
 
-        #Crea el grafico y los botones sliders
+        # Crea el grafico y los botones sliders
         self.crear_sliders()
         self.crear_grafico()
 
     # ------------------------------
-    #   Crea los botones slider 
+    #   Crea los botones slider
     # ------------------------------
     def crear_sliders(self):
         self.slider_vals = {
-            "base":    ctk.DoubleVar(value=90),
-            "brazo":   ctk.DoubleVar(value=120),
-            "codo":    ctk.DoubleVar(value=90),
-            "pinza":   ctk.DoubleVar(value=60),
+            "base": ctk.DoubleVar(value=90),
+            "brazo": ctk.DoubleVar(value=120),
+            "codo": ctk.DoubleVar(value=90),
+            "pinza": ctk.DoubleVar(value=60),
         }
 
         controles = [
-            ("Base (70–180°)", "base", 70, 180, 'red'),
-            ("Brazo (110–180°)", "brazo", 110, 180, 'green'),
-            ("Codo (90–135°)", "codo", 90, 135, 'orange'),
-            ("Pinza (0–180°)", "pinza", 0, 180, 'blue'),
+            ("Base (70–180°)", "base", 70, 180, "red"),
+            ("Brazo (110–180°)", "brazo", 110, 180, "green"),
+            ("Codo (90–135°)", "codo", 90, 135, "orange"),
+            ("Pinza (0–180°)", "pinza", 0, 180, "blue"),
         ]
 
         for i, control in enumerate(controles):
@@ -129,6 +135,8 @@ class ModoManual(ctk.CTkToplevel):
                 text=texto,
                 font=("Arial", 16),
                 text_color="black",
+                fg_color="#e6e6e6",  # Color de fondo
+                corner_radius=6,
             )
             label.grid(row=i * 2, column=0, padx=10, pady=(10, 0), sticky="w")
 
@@ -159,14 +167,18 @@ class ModoManual(ctk.CTkToplevel):
         x0, y0, z0 = 0, 0, 0
         x1, y1, z1 = 0, 0, self.L1
 
-        #Primer segmento brazo
+        # Primer segmento brazo
         x2 = x1 + self.L2 * np.cos(angulo_brazo_radianes) * np.cos(angulo_base_radianes)
         y2 = y1 + self.L2 * np.cos(angulo_brazo_radianes) * np.sin(angulo_base_radianes)
         z2 = z1 + self.L2 * np.sin(angulo_brazo_radianes)
 
-        #Segundo segmento codo
-        x3 = x2 + self.L3 * np.cos(angulo_brazo_radianes + angulo_codo_radianes) * np.cos(angulo_base_radianes)
-        y3 = y2 + self.L3 * np.cos(angulo_brazo_radianes + angulo_codo_radianes) * np.sin(angulo_base_radianes)
+        # Segundo segmento codo
+        x3 = x2 + self.L3 * np.cos(
+            angulo_brazo_radianes + angulo_codo_radianes
+        ) * np.cos(angulo_base_radianes)
+        y3 = y2 + self.L3 * np.cos(
+            angulo_brazo_radianes + angulo_codo_radianes
+        ) * np.sin(angulo_base_radianes)
         z3 = z2 + self.L3 * np.sin(angulo_brazo_radianes + angulo_codo_radianes)
 
         return (x0, x1, x2, x3), (y0, y1, y2, y3), (z0, z1, z2, z3)
@@ -202,9 +214,9 @@ class ModoManual(ctk.CTkToplevel):
         self.ax.set_title("Brazo Robótico 3D")
 
         # Segmentos
-        self.ax.plot(xs[0:2], ys[0:2], zs[0:2], color='red', linewidth=3)
-        self.ax.plot(xs[1:3], ys[1:3], zs[1:3], color='green', linewidth=3)
-        self.ax.plot(xs[2:4], ys[2:4], zs[2:4], color='orange', lw=3, marker='o')
+        self.ax.plot(xs[0:2], ys[0:2], zs[0:2], color="red", linewidth=3)
+        self.ax.plot(xs[1:3], ys[1:3], zs[1:3], color="green", linewidth=3)
+        self.ax.plot(xs[2:4], ys[2:4], zs[2:4], color="orange", lw=3, marker="o")
 
         # PINZA
         x_end, y_end, z_end = xs[-1], ys[-1], zs[-1]
@@ -214,8 +226,12 @@ class ModoManual(ctk.CTkToplevel):
         x_p1 = x_end + l_pinza * np.sin(thp / 2)
         x_p2 = x_end - l_pinza * np.sin(thp / 2)
 
-        self.ax.plot([x_end, x_p1], [y_end, y_end], [z_end, z_end], color="blue", linewidth=2)
-        self.ax.plot([x_end, x_p2], [y_end, y_end], [z_end, z_end], color="blue", linewidth=2)
+        self.ax.plot(
+            [x_end, x_p1], [y_end, y_end], [z_end, z_end], color="blue", linewidth=2
+        )
+        self.ax.plot(
+            [x_end, x_p2], [y_end, y_end], [z_end, z_end], color="blue", linewidth=2
+        )
 
         self.canvas.draw()
 
