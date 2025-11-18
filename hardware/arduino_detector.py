@@ -85,6 +85,22 @@ class ArduinoDetector:
             print(f"Error al enviar datos: {e}")
             return False
 
+    def leer_respuesta(self):
+        """Lee una línea enviada por el Arduino."""
+        if not self.conexion or not self.conexion.is_open:
+            return None
+
+        try:
+            if self.conexion.in_waiting > 0:
+                respuesta = (
+                    self.conexion.readline().decode("utf-8", errors="ignore").strip()
+                )
+                return respuesta
+        except serial.SerialException:
+            return None
+
+        return None
+
     def cerrar(self):
         """Cierra la conexion serie."""
         if self.conexion and self.conexion.is_open:

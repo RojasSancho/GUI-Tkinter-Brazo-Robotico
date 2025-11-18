@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 import cv2
 from hardware.arduino_detector import ArduinoDetector
 import serial
+import time
 
 
 class ModoAutomatico(ctk.CTkToplevel):
@@ -125,7 +126,8 @@ class ModoAutomatico(ctk.CTkToplevel):
         )
         self.label_video.pack(expand=True, fill="both")
 
-        # self.reproducir_video(r"videos\VideoTemu.mp4")
+        # --- Selección inicial predeterminada ---
+        self.optionmenu_callback("Rutina 1")
 
     # ------------------------------
     # Métodos de control
@@ -181,6 +183,8 @@ class ModoAutomatico(ctk.CTkToplevel):
         print(f"Se ejecutará la: {rutina} {repeticiones} veces")
 
         exito = self.detector.enviar_rutina(rutina, repeticiones)
+        time.sleep(0.1)
+        print("Arduino dice:", self.detector.leer_respuesta())
 
         if exito:
             print("Comando enviado correctamente.")
