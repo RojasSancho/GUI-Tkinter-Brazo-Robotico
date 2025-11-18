@@ -7,11 +7,12 @@ import serial
 
 
 class ModoAutomatico(ctk.CTkToplevel):
-    def __init__(self, parent, volver_callback=None):
+    def __init__(self, parent, detector, volver_callback=None):
         super().__init__(parent)
         self.parent = parent
         self.volver_callback = volver_callback
         self.revisando_conexion = False
+        self.detector = detector
 
         # ------------------------------
         # Configuración de la ventana
@@ -24,7 +25,7 @@ class ModoAutomatico(ctk.CTkToplevel):
         # ------------------------------
         # Variables
         # ------------------------------
-        self.subrutina_elegida = ctk.StringVar(value="")
+        self.subrutina_elegida = ctk.StringVar(value="Rutina 1")
         self.descripcion_subrutina_elegida = ctk.StringVar(
             value="Seleccione una rutina para ver la descripción"
         )
@@ -167,9 +168,24 @@ class ModoAutomatico(ctk.CTkToplevel):
         self.numero_var.set(max(0, self.numero_var.get() - 1))
 
     def ejecutar_rutina(self):
-        print(
-            f"Se ejecutará la: {self.subrutina_elegida.get()} {self.numero_var.get()} veces"
-        )
+        # Obtener valores del GUI
+        rutina_str = self.subrutina_elegida.get()
+        repeticiones = self.numero_var.get()
+
+        try:
+            rutina = int(rutina_str.split()[-1])
+        except ValueError:
+            print(f"Formato inválido de la rutina: {rutina_str}")
+            return
+
+        print(f"Se ejecutará la: {rutina} {repeticiones} veces")
+
+        exito = self.detector.enviar_rutina(rutina, repeticiones)
+
+        if exito:
+            print("Comando enviado correctamente.")
+        else:
+            print("No fue posible enviar comando.")
 
     def detener_rutina(self):
         print(f"Se detendrá la: {self.subrutina_elegida.get()}")
@@ -326,14 +342,23 @@ class ModoAutomatico(ctk.CTkToplevel):
     def cerrar_completamente(self):
         # Detener la reproducción del video
         if hasattr(self, "after_id") and self.after_id:
-            self.after_cancel(self.after_id)
-        if self.cap is not None and self.cap.isOpened():
-            self.cap.release()
+            try:
+                self.after_cancel(self.after_id)
+            except:
+                pass
 
-        self.revisando_conexion = False
-        self.arduino_detector.cerrar()
+        # Cerrar detector correctamente
+        if hasattr(self, "detector") and self.detector:
+            try:
+                self.detector.cerrar()
+            except:
+                pass
+
+        # Volver al menú principal en vez de destruir parent
+        if self.volver_callback:
+            self.volver_callback()
+
         self.destroy()
-        self.parent.destroy()
 
 
 if __name__ == "__main__":

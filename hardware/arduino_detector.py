@@ -4,10 +4,10 @@ import time
 
 
 """Para depurar, indica que dispositivos estan conectados en los puertos """
-# print("Puertos siendo utilizados:")
-# puertos = serial.tools.list_ports.comports()
-# for puerto in puertos:
-#    print(puerto)
+print("Puertos siendo utilizados:")
+puertos = serial.tools.list_ports.comports()
+for puerto in puertos:
+    print(puerto)
 
 
 class ArduinoDetector:

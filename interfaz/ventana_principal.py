@@ -49,7 +49,9 @@ def abrir_modo_rutina(ventana, frame_inferior):
             ventana.deiconify()  # Muestra de nuevo
 
         # Abrir ventana modo automático
-        ModoAutomatico(parent=ventana, volver_callback=volver_al_principal)
+        ModoAutomatico(
+            parent=ventana, detector=detector, volver_callback=volver_al_principal
+        )
     else:
         print("Modo Rutina cancelado")
 
@@ -69,6 +71,7 @@ def ejecutar_app():
     ventana.after(0, lambda: ventana.state("zoomed"))
     ventana.minsize(800, 600)
 
+    global detector
     detector = ArduinoDetector()
     estado_arduino_anterior = detector.estado_arduino
     ventana.after(2000, lambda: intentar_conexion_inicial(detector))

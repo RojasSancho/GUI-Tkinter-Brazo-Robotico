@@ -242,8 +242,21 @@ class ModoManual(ctk.CTkToplevel):
         self.destroy()
 
     def cerrar_completamente(self):
+        if hasattr(self, "after_id") and self.after_id:
+            try:
+                self.after_cancel(self.after_id)
+            except:
+                pass
+
+        try:
+            plt.close(self.fig)
+        except:
+            pass
+
+        if self.volver_callback:
+            self.volver_callback()
+
         self.destroy()
-        self.parent.destroy()
 
 
 # ------------------------------
