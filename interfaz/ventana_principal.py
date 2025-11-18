@@ -9,7 +9,7 @@ from interfaz.modo_manual import ModoManual
 # ------------------------------
 # Variables de estado
 # ------------------------------
-modo_actual = None  # "MANUAL" o "RUTINA"
+modo_actual = None  # "MANUAL" o "RUTINA"a
 
 ctk.set_appearance_mode("light")
 ctk.set_default_color_theme("dark-blue")
