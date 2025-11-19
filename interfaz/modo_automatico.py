@@ -15,6 +15,8 @@ class ModoAutomatico(ctk.CTkToplevel):
         self.volver_callback = volver_callback
         self.revisando_conexion = False
         self.detector = detector
+        self.rutina_activa = False
+        self.primera_ejecucion = True  # variable de control
 
         # ------------------------------
         # Configuración de la ventana
@@ -183,54 +185,77 @@ class ModoAutomatico(ctk.CTkToplevel):
             print(f"Formato inválido de la rutina: {rutina_str}")
             return
 
-        print(f"Se ejecutará la: {rutina} {repeticiones} veces")
-
         # Bloquear botón ejecutar
         self.boton_ejecutar.configure(state="disabled")
 
-        # Enviar comando al Arduino
-        exito = self.detector.enviar_rutina(rutina, repeticiones)
-        if not exito:
-            print("No fue posible enviar comando.")
-            mbox.showinfo(
-                "Error de conexion con Arduino",
-                "No fue posible iniciar la rutina.",
-                parent=self,
-            )
-            self.boton_ejecutar.configure(state="normal")
-            return
-        print("Comando enviado correctamente.")
-
-        # Guardar tiempo de inicio de rutina y timeout maximo (ms)
-        tiempo_inicio = time.time()
-        timeout_segundos = 10
-        self.rutina_activa = True  # variable de control
-
-        # Función interna para revisar respuesta del Arduino periódicamente
-        def revisar_respuesta():
-            if not self.rutina_activa:
-                return  # Si ya terminó o hubo timeout, no hacer nada
-
-            respuesta = self.detector.leer_respuesta()
-            if respuesta == "Rutina completada":
-                print("Rutina completada por Arduino.")
+        # Función que realmente envía el comando al Arduino
+        def enviar_comando():
+            exito = self.detector.enviar_rutina(rutina, repeticiones)
+            if not exito:
+                print("No fue posible enviar comando.")
                 mbox.showinfo(
-                    "Rutina completada", "La rutina ha sido completada.", parent=self
+                    "Error de conexion con Arduino",
+                    "No fue posible iniciar la rutina.",
+                    parent=self,
                 )
                 self.boton_ejecutar.configure(state="normal")
-            elif time.time() - tiempo_inicio > timeout_segundos:
-                self.rutina_activa = False
-                print("ERROR: Timeout. Arduino no respondió a tiempo.")
-                mbox.showinfo(
-                    "Timeout", "ERROR: Arduino no respondió a tiempo.", parent=self
-                )
-                self.boton_ejecutar.configure(state="normal")
-            else:
-                # Reintentar dentro de 100 ms
-                self.after(100, revisar_respuesta)
+                return
+            print("Comando enviado correctamente.")
 
-        # Iniciar la revisión
-        self.after(100, revisar_respuesta)
+            # Guardar tiempo de inicio de rutina y timeout maximo (ms)
+            tiempo_inicio = time.time()
+            timeout_segundos = 10
+
+            # Función interna para revisar respuesta periódicamente
+            def revisar_respuesta():
+                if not self.rutina_activa:
+                    return
+
+                try:
+                    respuesta = self.detector.leer_respuesta()
+                except Exception as e:
+                    self.rutina_activa = False
+                    print("ERROR: Comunicación con Arduino falló:", e)
+                    mbox.showerror(
+                        "Error de comunicación",
+                        f"No se pudo leer la respuesta de Arduino.\nDetalle: {e}",
+                        parent=self,
+                    )
+                    self.boton_ejecutar.configure(state="normal")
+                    return
+
+                tiempo_transcurrido = time.time() - tiempo_inicio
+
+                if respuesta == "Rutina completada":
+                    self.rutina_activa = False
+                    print(f"{rutina_str} completada por Arduino.")
+                    mbox.showinfo(
+                        "Rutina completada",
+                        f"Las repeticiones de {rutina_str} han sido completadas.",
+                        parent=self,
+                    )
+                    self.boton_ejecutar.configure(state="normal")
+                elif tiempo_transcurrido > timeout_segundos:
+                    self.rutina_activa = False
+                    print("ERROR: Timeout. Arduino no respondió a tiempo.")
+                    mbox.showinfo(
+                        "Timeout", "ERROR: Arduino no respondió a tiempo.", parent=self
+                    )
+                    self.boton_ejecutar.configure(state="normal")
+                else:
+                    self.after(100, revisar_respuesta)
+
+            # Iniciar la revisión
+            self.rutina_activa = True
+            self.after(100, revisar_respuesta)
+
+        # --- Delay solo la primera vez ---
+        if self.primera_ejecucion:
+            self.primera_ejecucion = False
+            print("Primera ejecución: esperando 4 segundos antes de enviar")
+            self.after(4000, enviar_comando)
+        else:
+            enviar_comando()
 
     def detener_rutina(self):
         # Solo se envía si la rutina estaba en ejecución (botón ejecutar deshabilitado)

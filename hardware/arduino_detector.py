@@ -153,3 +153,11 @@ class ArduinoDetector:
             return "conectado"
         else:
             return "desconectado"
+
+    def limpiar_buffer(self):
+        """Descarta cualquier dato que haya quedado en el buffer serial."""
+        try:
+            while self.leer_respuesta() is not None:
+                pass
+        except Exception:
+            pass
