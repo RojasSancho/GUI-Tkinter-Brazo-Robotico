@@ -192,7 +192,12 @@ class ModoAutomatico(ctk.CTkToplevel):
             print("No fue posible enviar comando.")
 
     def detener_rutina(self):
-        print(f"Se detendrá la: {self.subrutina_elegida.get()}")
+        # Envia comando de detencion al Arduino
+        exito = self.detector.enviar_rutina(0, 0)  # rutina 0 significa detener
+        if exito:
+            print("Rutina detenida correctamente.")
+        else:
+            print("No fue posible detener la rutina.")
 
     # ------------------------------
     # Widgets

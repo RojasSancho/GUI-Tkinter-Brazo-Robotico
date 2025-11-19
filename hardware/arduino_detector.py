@@ -79,9 +79,11 @@ class ArduinoDetector:
         try:
             mensaje = f"{rutina},{repeticiones}\n"
             self.conexion.write(mensaje.encode("utf-8"))  # Usar UTF-8
+            print("--------------------------------")
             print(f"Mensaje enviado al Arduino: {mensaje.strip()}")
             return True
         except serial.SerialException as e:
+            print("-----------------------------")
             print(f"Error al enviar datos: {e}")
             return False
 
