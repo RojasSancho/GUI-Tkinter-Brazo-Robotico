@@ -349,19 +349,16 @@ class ModoAutomatico(ctk.CTkToplevel):
         mostrar_frame()
 
     def cerrar_completamente(self):
+        # Detener rutina que se encuentre activa
+        self.detener_rutina()
+
         # Detener la reproducción del video
         if hasattr(self, "after_id") and self.after_id:
-            try:
-                self.after_cancel(self.after_id)
-            except:
-                pass
+            self.after_cancel(self.after_id)
 
         # Cerrar detector correctamente
         if hasattr(self, "detector") and self.detector:
-            try:
-                self.detector.cerrar()
-            except:
-                pass
+            self.detector.cerrar()
 
         # Volver al menú principal en vez de destruir parent
         if self.volver_callback:
