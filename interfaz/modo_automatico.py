@@ -164,10 +164,12 @@ class ModoAutomatico(ctk.CTkToplevel):
         self.cajaTexto.configure(state="disabled")
 
     def aumentar(self):
-        self.numero_var.set(self.numero_var.get() + 1)
+        if self.numero_var.get() < 5:
+            self.numero_var.set(self.numero_var.get() + 1)
 
     def disminuir(self):
-        self.numero_var.set(max(0, self.numero_var.get() - 1))
+        if self.numero_var.get() > 0:
+            self.numero_var.set(self.numero_var.get() - 1)
 
     def ejecutar_rutina(self):
         # Obtener valores del GUI
@@ -183,7 +185,7 @@ class ModoAutomatico(ctk.CTkToplevel):
         print(f"Se ejecutará la: {rutina} {repeticiones} veces")
 
         exito = self.detector.enviar_rutina(rutina, repeticiones)
-        time.sleep(0.1)
+        time.sleep(0.4)
         print("Arduino dice:", self.detector.leer_respuesta())
 
         if exito:
@@ -207,7 +209,7 @@ class ModoAutomatico(ctk.CTkToplevel):
         label_subrutinas = ctk.CTkLabel(
             self.frame_central,
             text="Menú de \n subrutinas pre-programadas",
-            font=("Bebas Neue", 30),
+            font=("Bebas Neue", 40),
         )
         label_subrutinas.grid(row=0, column=0, padx=20, pady=10, sticky="nsew")
 
@@ -215,7 +217,7 @@ class ModoAutomatico(ctk.CTkToplevel):
         menu_desplegable = ctk.CTkOptionMenu(
             self.frame_central,
             values=["Rutina 1", "Rutina 2", "Rutina 3", "Rutina 4"],
-            font=("Bebas Neue", 30),
+            font=("Bebas Neue", 40),
             height=60,
             command=self.optionmenu_callback,
         )
@@ -226,7 +228,7 @@ class ModoAutomatico(ctk.CTkToplevel):
             self.frame_descripcion,
             corner_radius=13,
             height=185,
-            font=("Bebas Neue", 17),
+            font=("Arial", 18),
         )
         self.cajaTexto.grid(row=0, column=0, sticky="nsew")
         self.cajaTexto.insert("0.0", self.descripcion_subrutina_elegida.get())
@@ -247,14 +249,18 @@ class ModoAutomatico(ctk.CTkToplevel):
         for col in range(3):
             self.frame_spinner.grid_columnconfigure(col, weight=1)
 
-        entrada_numero = ctk.CTkEntry(
+        self.label_numero = ctk.CTkLabel(
             self.frame_spinner,
             textvariable=self.numero_var,
+            font=("Bebas Neue", 25),
+            # text_color="black",
             width=120,
             height=40,
-            justify="center",
+            anchor="center",
+            corner_radius=10,
+            # fg_color="#CCCCCC",
         )
-        entrada_numero.grid(row=0, column=0, sticky="nsew", padx=5, pady=0)
+        self.label_numero.grid(row=0, column=0, sticky="nsew", padx=5, pady=0)
 
         boton_up = ctk.CTkButton(
             self.frame_spinner, text="▲", height=40, command=self.aumentar
@@ -350,15 +356,24 @@ class ModoAutomatico(ctk.CTkToplevel):
 
     def cerrar_completamente(self):
         # Detener rutina que se encuentre activa
-        self.detener_rutina()
+        try:
+            self.detener_rutina()
+        except:
+            pass
 
         # Detener la reproducción del video
-        if hasattr(self, "after_id") and self.after_id:
-            self.after_cancel(self.after_id)
+        try:
+            if hasattr(self, "after_id") and self.after_id:
+                self.after_cancel(self.after_id)
+        except:
+            pass
 
         # Cerrar detector correctamente
-        if hasattr(self, "detector") and self.detector:
-            self.detector.cerrar()
+        try:
+            if hasattr(self, "detector") and self.detector:
+                self.detector.cerrar()
+        except:
+            pass
 
         # Volver al menú principal en vez de destruir parent
         if self.volver_callback:
