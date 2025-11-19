@@ -184,22 +184,61 @@ class ModoAutomatico(ctk.CTkToplevel):
 
         print(f"Se ejecutará la: {rutina} {repeticiones} veces")
 
+        # Bloquear botón ejecutar
+        self.boton_ejecutar.configure(state="disabled")
+
+        # Enviar comando al Arduino
         exito = self.detector.enviar_rutina(rutina, repeticiones)
-        time.sleep(0.4)
-        print("Arduino dice:", self.detector.leer_respuesta())
+        if not exito:
+            print("No fue posible enviar comando.")
+            self.boton_ejecutar.configure(state="normal")
+            return
+        print("Comando enviado correctamente.")
 
         if exito:
             print("Comando enviado correctamente.")
         else:
             print("No fue posible enviar comando.")
 
+        # Función interna para revisar respuesta del Arduino periódicamente
+
+        def revisar_respuesta():
+            respuesta = self.detector.leer_respuesta()
+            if respuesta == "Rutina completada":
+                print("Rutina completada por Arduino.")
+                self.boton_ejecutar.configure(state="normal")
+            else:
+                # Reintentar dentro de 100 ms
+                self.after(100, revisar_respuesta)
+
+        # Iniciar la revisión
+        self.after(100, revisar_respuesta)
+
     def detener_rutina(self):
+        # Solo se envía si la rutina estaba en ejecución (botón ejecutar deshabilitado)
+        if self.boton_ejecutar.cget("state") == "normal":
+            return  # No hay rutina activa, no hacer nada
+
         # Envia comando de detencion al Arduino
         exito = self.detector.enviar_rutina(0, 0)  # rutina 0 significa detener
-        if exito:
-            print("Rutina detenida correctamente.")
-        else:
-            print("No fue posible detener la rutina.")
+
+        if not exito:
+            print("No fue posible enviar comando de detención.")
+            return
+
+        print("Comando de detención enviado correctamente.")
+
+        # Función interna para revisar respuesta periódicamente
+
+        def revisar_detencion():
+            respuesta = self.detector.leer_respuesta()
+            if respuesta == "Rutina detenida":
+                print("Arduino confirma detención de la rutina.")
+                self.boton_ejecutar.configure(state="normal")
+            else:
+                self.after(100, revisar_detencion)
+
+        revisar_detencion()
 
     # ------------------------------
     # Widgets
@@ -277,7 +316,7 @@ class ModoAutomatico(ctk.CTkToplevel):
         for col in range(4):
             self.frame_boton_ejecutar.grid_columnconfigure(col, weight=1)
 
-        boton_ejecutar = ctk.CTkButton(
+        self.boton_ejecutar = ctk.CTkButton(
             self.frame_boton_ejecutar,
             text="Ejecutar",
             font=("Bebas Neue", 30),
@@ -285,7 +324,7 @@ class ModoAutomatico(ctk.CTkToplevel):
             height=60,
             command=self.ejecutar_rutina,
         )
-        boton_ejecutar.grid(row=0, column=1, sticky="nsew", padx=5, pady=0)
+        self.boton_ejecutar.grid(row=0, column=1, sticky="nsew", padx=5, pady=0)
 
         boton_detener_subrutina = ctk.CTkButton(
             self.frame_boton_ejecutar,
