@@ -2,7 +2,6 @@ import serial
 import serial.tools.list_ports
 import time
 
-
 """Para depurar, indica que dispositivos estan conectados en los puertos """
 print("Puertos siendo utilizados:")
 puertos = serial.tools.list_ports.comports()

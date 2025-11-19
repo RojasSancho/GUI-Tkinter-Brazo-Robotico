@@ -13,7 +13,8 @@ import matplotlib.pyplot as plt
 #     Clase modo automatico
 # ------------------------------
 class ModoManual(ctk.CTkToplevel):
-    def __init__(self, parent, volver_callback=None):
+    def __init__(self, parent, detector, volver_callback=None):
+        self.detector = detector
         """
         L1: altura base, simbolico por que en realida es la base
         L2: longitud primer segmento
@@ -145,7 +146,8 @@ class ModoManual(ctk.CTkToplevel):
                 from_=mn,
                 to=mx,
                 variable=self.slider_vals[varname],
-                command=self.actualizar_grafico,
+                # modificacion para ajustar el grafico
+                command=lambda val, n=varname: self.cambio_slider(n, val),
                 progress_color=color,
                 button_color=color,
             )
@@ -257,6 +259,27 @@ class ModoManual(ctk.CTkToplevel):
             self.volver_callback()
 
         self.destroy()
+
+    # cambio de slider NUEVO
+    def cambio_slider(self, nombre, valor):
+        self.actualizar_grafico()
+
+        if not self.detector or not self.detector.esta_conectado():
+            return
+
+        servo_map = {
+            "base": 1,
+            "brazo": 2,
+            "codo": 3,
+            "pinza": 4,
+        }
+
+        sid = servo_map[nombre]
+        ang = int(float(valor))
+
+        # enviar_rutina() = (servoID, angulo)
+        self.detector.enviar_rutina(sid, ang)
+
 
 
 # ------------------------------

@@ -179,6 +179,11 @@ class ModoAutomatico(ctk.CTkToplevel):
         rutina_str = self.subrutina_elegida.get()
         repeticiones = self.numero_var.get()
 
+        # En caso de repetirse la rutina mas de 5 veces
+        if repeticiones > 5:
+            repeticiones = 5
+            self.numero_var.set(5)
+
         try:
             rutina = int(rutina_str.split()[-1])
         except ValueError:
@@ -212,7 +217,8 @@ class ModoAutomatico(ctk.CTkToplevel):
                     return
 
                 try:
-                    respuesta = self.detector.leer_respuesta()
+                    # strip() para limpiar respuesta
+                    respuesta = self.detector.leer_respuesta().strip()
                 except Exception as e:
                     self.rutina_activa = False
                     print("ERROR: Comunicación con Arduino falló:", e)
@@ -274,7 +280,8 @@ class ModoAutomatico(ctk.CTkToplevel):
         # Función interna para revisar respuesta periódicamente
 
         def revisar_detencion():
-            respuesta = self.detector.leer_respuesta()
+            # strip() nuevo
+            respuesta = self.detector.leer_respuesta().strip()
             if respuesta == "Rutina detenida":
                 print("Arduino confirma detención de la rutina.")
                 self.boton_ejecutar.configure(state="normal")
