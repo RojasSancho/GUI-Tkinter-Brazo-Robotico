@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.messagebox as mbox
 import customtkinter as ctk
 from PIL import Image, ImageTk
 import cv2
@@ -191,21 +192,38 @@ class ModoAutomatico(ctk.CTkToplevel):
         exito = self.detector.enviar_rutina(rutina, repeticiones)
         if not exito:
             print("No fue posible enviar comando.")
+            mbox.showinfo(
+                "Error de conexion con Arduino",
+                "No fue posible iniciar la rutina.",
+                parent=self,
+            )
             self.boton_ejecutar.configure(state="normal")
             return
         print("Comando enviado correctamente.")
 
-        if exito:
-            print("Comando enviado correctamente.")
-        else:
-            print("No fue posible enviar comando.")
+        # Guardar tiempo de inicio de rutina y timeout maximo (ms)
+        tiempo_inicio = time.time()
+        timeout_segundos = 10
+        self.rutina_activa = True  # variable de control
 
         # Función interna para revisar respuesta del Arduino periódicamente
-
         def revisar_respuesta():
+            if not self.rutina_activa:
+                return  # Si ya terminó o hubo timeout, no hacer nada
+
             respuesta = self.detector.leer_respuesta()
             if respuesta == "Rutina completada":
                 print("Rutina completada por Arduino.")
+                mbox.showinfo(
+                    "Rutina completada", "La rutina ha sido completada.", parent=self
+                )
+                self.boton_ejecutar.configure(state="normal")
+            elif time.time() - tiempo_inicio > timeout_segundos:
+                self.rutina_activa = False
+                print("ERROR: Timeout. Arduino no respondió a tiempo.")
+                mbox.showinfo(
+                    "Timeout", "ERROR: Arduino no respondió a tiempo.", parent=self
+                )
                 self.boton_ejecutar.configure(state="normal")
             else:
                 # Reintentar dentro de 100 ms
