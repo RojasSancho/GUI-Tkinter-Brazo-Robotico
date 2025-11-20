@@ -245,12 +245,12 @@ class ModoManual(ctk.CTkToplevel):
         if hasattr(self, "after_id") and self.after_id:
             try:
                 self.after_cancel(self.after_id)
-            except:
+            except Exception:
                 pass
 
         try:
             plt.close(self.fig)
-        except:
+        except Exception:
             pass
 
         if self.volver_callback:
