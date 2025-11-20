@@ -1,4 +1,6 @@
 customtkinter
+numpy
+matplotlib
 pyserial
 opencv-python
 Pillow
