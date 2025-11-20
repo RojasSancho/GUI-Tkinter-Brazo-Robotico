@@ -280,8 +280,6 @@ class ModoManual(ctk.CTkToplevel):
         # enviar_rutina() = (servoID, angulo)
         self.detector.enviar_rutina(sid, ang)
 
-
-
 # ------------------------------
 # Para prueba local
 # ------------------------------
