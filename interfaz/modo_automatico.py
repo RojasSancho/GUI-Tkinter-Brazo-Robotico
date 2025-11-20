@@ -195,7 +195,7 @@ class ModoAutomatico(ctk.CTkToplevel):
                 print("No fue posible enviar comando.")
                 mbox.showinfo(
                     "Error de conexion con Arduino",
-                    "No fue posible iniciar la rutina.",
+                    "No fue posible iniciar la rutina. Revise la conexion fisica.",
                     parent=self,
                 )
                 self.boton_ejecutar.configure(state="normal")
