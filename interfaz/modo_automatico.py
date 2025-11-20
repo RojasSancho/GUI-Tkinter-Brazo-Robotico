@@ -440,7 +440,7 @@ class ModoAutomatico(ctk.CTkToplevel):
         # Detener rutina que se encuentre activa
         try:
             self.detener_rutina()
-        except:
+        except Exception:
             pass
 
         # Detener la reproducción del video
@@ -454,7 +454,7 @@ class ModoAutomatico(ctk.CTkToplevel):
         try:
             if hasattr(self, "detector") and self.detector:
                 self.detector.cerrar()
-        except:
+        except Exception:
             pass
 
         # Volver al menú principal en vez de destruir parent
