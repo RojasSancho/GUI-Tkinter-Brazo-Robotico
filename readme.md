@@ -111,5 +111,3 @@ Proyecto Integrador de Lenguaje Ensamblador y Fundamentos de Arquitectura
 ![alt text](images/indicador_conectado.png)
 
 ![alt text](images/indicador_desconectado.png)
-
-
