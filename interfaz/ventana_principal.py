@@ -1,3 +1,28 @@
+"""
+ventana_principal.py
+--------------------
+
+Ventana principal del sistema/interfaz de control del brazo robótico.
+
+Funciones principales:
+- Mostrar la interfaz inicial del proyecto.
+- Permitir al usuario elegir entre modo manual o modo de rutina.
+- Administrar ventana principal y sus ventanas hijas (ModoManual / ModoAutomatico).
+- Verificar continuamente el estado de conexión con el Arduino mediante un LED indicador.
+
+Autores:
+    Hermes Rojas Sancho
+    Donifer Campos Parra
+    Jose Ignacio Goldoni
+
+Curso:
+    Lenguaje Ensamblador (CI-0118)
+    Proyecto Integrador de Lenguaje Ensamblador y Fundamentos de Arquitectura
+
+Año:
+    2025
+"""
+
 import tkinter as tk
 import customtkinter as ctk
 from tkinter import messagebox
@@ -15,10 +40,18 @@ ctk.set_appearance_mode("light")
 ctk.set_default_color_theme("dark-blue")
 
 
-# ------------------------------
+# --------------------------------------------------------------------------------
 # Funciones auxiliares
-# ------------------------------
+# --------------------------------------------------------------------------------
 def abrir_modo_manual(ventana, frame_inferior):
+    """
+    Abre la ventana de modo manual luego de pedir confirmación al usuario.
+
+    Args:
+        ventana (CTk): Ventana principal.
+        frame_inferior (CTkFrame): Contenedor inferior donde se ubican controles.
+
+    """
     global modo_actual
     respuesta = messagebox.askyesno("Confirmación", "¿Activar modo manual?")
     if respuesta:
@@ -26,6 +59,7 @@ def abrir_modo_manual(ventana, frame_inferior):
         ventana.withdraw()  # Ocultar ventana principal
 
         def volver_al_principal():
+            """Restaura la ventana principal después de cerrar ModoManual."""
             ventana.state("zoomed")  # Maximizar primero
             ventana.update_idletasks()  # Forzar redibujo
             ventana.deiconify()  # Muestra de nuevo
@@ -37,6 +71,14 @@ def abrir_modo_manual(ventana, frame_inferior):
 
 
 def abrir_modo_rutina(ventana, frame_inferior):
+    """
+    Abre la ventana de modo de rutina luego de pedir confirmación al usuario.
+
+    Args:
+        ventana (CTk): Ventana principal.
+        frame_inferior (CTkFrame): Contenedor inferior con controles.
+
+    """
     global modo_actual
     respuesta = messagebox.askyesno("Confirmación", "¿Activar modo de rutina?")
     if respuesta:
@@ -44,6 +86,7 @@ def abrir_modo_rutina(ventana, frame_inferior):
         ventana.withdraw()  # Oculta la ventana principal
 
         def volver_al_principal():
+            """Restaura la ventana principal tras cerrar ModoAutomatico."""
             ventana.state("zoomed")  # Maximizar primero
             ventana.update_idletasks()  # Forzar redibujo
             ventana.deiconify()  # Muestra de nuevo
@@ -57,29 +100,47 @@ def abrir_modo_rutina(ventana, frame_inferior):
 
 
 def activar_salir(ventana):
+    """
+    Pregunta al usuario si desea salir y cierra la aplicación si confirma.
+
+    Args:
+        ventana (CTk): Ventana principal.
+
+    """
     respuesta = messagebox.askyesno("Confirmación", "¿Deseas salir de la aplicación?")
     if respuesta:
         ventana.destroy()
 
 
-# ------------------------------
-# Ejecutar aplicación
-# ------------------------------
+# --------------------------------------------------------------------------------
+# Función principal de ejecución
+# --------------------------------------------------------------------------------
 def ejecutar_app():
+    """
+    Punto de entrada de la aplicación/interfaz:
+
+    Inicializa la ventana principal del sistema, configura el layout general,
+    crea los tabs, botones de navegación, detector de Arduino y ciclo de actualización
+    del estado de conexión.
+    """
     ventana = ctk.CTk()
     ventana.title("Brazo Robótico")
     ventana.after(0, lambda: ventana.state("zoomed"))
     ventana.minsize(800, 600)
 
+    # Inicializar detector de Arduino
     global detector
     detector = ArduinoDetector()
     estado_arduino_anterior = detector.estado_arduino
     ventana.after(2000, lambda: intentar_conexion_inicial(detector))
 
-    # ------------------------------
-    # Función para actualizar LED de conexión
-    # ------------------------------
+    # --------------------------------------------------
+    # LED / texto para mostrar estado de conexión
+    # --------------------------------------------------
     def actualizar_estado_led(event=None):
+        """
+        Actualiza el LED y el texto con el estado actual del Arduino.
+        """
         if detector.detectar():
             canvas_led_conexion.itemconfig(led_conexion, fill="green")
             label_led.configure(text=f"Conectado en {detector.obtener_puerto()}")
@@ -88,15 +149,18 @@ def ejecutar_app():
             label_led.configure(text="Desconectado")
 
     def cambiar_apariencia():
+        """
+        Alterna entre modo claro y oscuro de la interfaz gráfica.
+        """
         if switch_apariencia.get():
             ctk.set_appearance_mode("dark")
         else:
             ctk.set_appearance_mode("light")
         canvas_led_conexion.config(bg=ventana.cget("bg"))
 
-    # ------------------------------
-    # Layout principal con tabs
-    # ------------------------------
+    # --------------------------------------------------
+    # Layout principal con tabs (pestañas)
+    # --------------------------------------------------
     tabview = ctk.CTkTabview(ventana, width=780, height=500)
     tabview.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
     tabview.add("Principal")
@@ -106,9 +170,9 @@ def ejecutar_app():
     ventana.grid_rowconfigure(0, weight=1)
     ventana.grid_rowconfigure(1, weight=0)
 
-    # ------------------------------
-    # Pestaña Principal
-    # ------------------------------
+    # --------------------------------------------------
+    # Pestaña: Principal
+    # --------------------------------------------------
     frame_principal = tabview.tab("Principal")
     frame_principal.grid_columnconfigure(0, weight=1)
     for i in range(4):
@@ -121,12 +185,10 @@ def ejecutar_app():
     )
     etiqueta.grid(row=0, column=0, pady=60)
 
-    # ------------------------------
+    # --------------------------------------------------
     # Botones de modo
-    # ------------------------------
-    frame_inferior = ctk.CTkFrame(
-        ventana, fg_color="transparent"
-    )  # Frame para pasar a modo automático
+    # --------------------------------------------------
+    frame_inferior = ctk.CTkFrame(ventana, fg_color="transparent")
     frame_inferior.grid(row=1, column=0, padx=10, pady=0, sticky="ew")
     frame_inferior.grid_columnconfigure(0, weight=1)
     frame_inferior.grid_columnconfigure(1, weight=1)
@@ -153,9 +215,9 @@ def ejecutar_app():
     )
     boton_manual.grid(row=2, column=0, pady=10)
 
-    # ------------------------------
-    # Parte inferior (LED y salir)
-    # ------------------------------
+    # --------------------------------------------------
+    # Indicador LED de conexión y botón Salir
+    # --------------------------------------------------
     frame_led = ctk.CTkFrame(frame_inferior, fg_color="transparent")
     frame_led.grid(row=0, column=0, pady=10, sticky="w")
     frame_led.grid_columnconfigure(0, weight=0)
@@ -189,19 +251,28 @@ def ejecutar_app():
     boton_salir.grid(row=0, column=1, pady=10, sticky="e")
 
     # ------------------------------
-    # Pestaña Configuración
+    # Pestaña: Configuración
     # ------------------------------
     frame_config = tabview.tab("Configuración")
+
     switch_apariencia = ctk.CTkSwitch(
         frame_config, text="MODO CLARO / MODO OSCURO", command=cambiar_apariencia
     )
     switch_apariencia.grid(row=0, column=0, pady=20, padx=20)
 
+    # -------------------------------------------------------------------
+    # Rutinas de actualización
+    # -------------------------------------------------------------------
     def intentar_conexion_inicial(detector):
+        """Realiza un primer intento de detección y conexión al Arduino."""
         if detector.detectar():
             detector.conectar()
 
     def actualizar_led_gui():
+        """
+        Refresca continuamente el indicador visual del estado del Arduino
+        (LED y texto).
+        """
         estado = detector.actualizar_estado()  # devuelve "conectado" o "desconectado"
 
         if estado == "conectado":
@@ -218,5 +289,10 @@ def ejecutar_app():
     ventana.mainloop()
 
 
+# --------------------------------------------------------
+# Ejecución directa del módulo
+# --------------------------------------------------------
+if __name__ == "__main__":
+    ejecutar_app()
 if __name__ == "__main__":
     ejecutar_app()
