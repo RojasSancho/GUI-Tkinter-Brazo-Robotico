@@ -186,7 +186,7 @@ class ArduinoDetector:
             return False
 
         try:
-            mensaje = f"S{a},{b}\n"
+            mensaje = f"S{servo},{angulo}\n"
             self.conexion.write(mensaje.encode("utf-8"))
             print("-----------------------------")
             print(f"Mensaje enviado al Arduino: {mensaje.strip()}")
