@@ -35,10 +35,10 @@ class ModoAutomatico(ctk.CTkToplevel):
         )
         self.numero_var = ctk.IntVar(value=0)
         self.videos = {
-            "Rutina 1": r"videos\VideoTemu.mp4",
-            "Rutina 2": r"videos\Terabyte-VideoTempFinal.mp4",
-            "Rutina 3": r"videos\prueba2.mp4",
-            "Rutina 4": r"videos\Terabyte-VideoTempFinal.mp4",
+            "Rutina 1": r"videos\rutina1.mp4",
+            "Rutina 2": r"videos\rutina2.mp4",
+            "Rutina 3": r"videos\rutina3.mp4",
+            "Rutina 4": r"videos\rutina4.mp4",
         }
 
         self.cap = None
@@ -154,9 +154,9 @@ class ModoAutomatico(ctk.CTkToplevel):
 
     def mostrar_informacion_subrutina(self, choice):
         textos = {
-            "Rutina 1": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeo",
-            "Rutina 2": "Rutina 2 realiza estas acciones",
-            "Rutina 3": "Rutina 3 realiza estas acciones",
+            "Rutina 1": "Rutina de prueba: \n● Realiza un movimiento hacia abajo del servo de hombro\n● Cierra y abre la pinza\n● Vuelve a subir el hombro.",
+            "Rutina 2": "Rutina para desapilar:\n● Se mueve al punto donde se encuentran los elementos apilados.\n● Prepara la posición de la pinza para tomar el siguiente elemento.\n● Cierra la pinza y quita el elemento de la pila.\n● ",
+            "Rutina 3": "Rutina para apilar:",
             "Rutina 4": "Rutina 4 realiza estas acciones",
         }
         texto = textos.get(choice, "No hay información disponible")
@@ -204,7 +204,7 @@ class ModoAutomatico(ctk.CTkToplevel):
 
             # Guardar tiempo de inicio de rutina y timeout maximo (ms)
             tiempo_inicio = time.time()
-            timeout_segundos = 10
+            timeout_segundos = 80
 
             # Función interna para revisar respuesta periódicamente
             def revisar_respuesta():
@@ -432,7 +432,7 @@ class ModoAutomatico(ctk.CTkToplevel):
             self.label_video.image = img_final
 
             # Guardar el id del ciclo para poder cancelarlo después
-            self.after_id = self.after(30, mostrar_frame)
+            self.after_id = self.after(24, mostrar_frame)
 
         mostrar_frame()
 
