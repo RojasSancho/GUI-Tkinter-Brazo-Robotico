@@ -154,10 +154,10 @@ class ModoAutomatico(ctk.CTkToplevel):
 
     def mostrar_informacion_subrutina(self, choice):
         textos = {
-            "Rutina 1": "Rutina de prueba: \n● Realiza un movimiento hacia abajo del servo de hombro\n● Cierra y abre la pinza\n● Vuelve a subir el hombro.",
-            "Rutina 2": "Rutina para desapilar:\n● Se mueve al punto donde se encuentran los elementos apilados.\n● Prepara la posición de la pinza para tomar el siguiente elemento.\n● Cierra la pinza y quita el elemento de la pila.\n● ",
-            "Rutina 3": "Rutina para apilar:",
-            "Rutina 4": "Rutina 4 realiza estas acciones",
+            "Rutina 1": "Rutina de prueba de pinza: \n● Realiza un movimiento hacia abajo del servo de hombro\n● Cierra y abre la pinza\n● Vuelve a subir el hombro.",
+            "Rutina 2": "Rutina para desapilar:\n● Se mueve al punto donde se encuentran los elementos apilados.\n● Prepara la posición de la pinza para tomar el siguiente elemento de la pila.\n● Cierra la pinza y retira el elemento de la pila. ",
+            "Rutina 3": "Rutina para apilar:\n● Prepara la posición de la pinza para tomar un nuevo elemento a apilar.\n● Cierra la pinza y realiza movimiento hacia la pila.\n● Coloca el siguiente elemento de la pila.",
+            "Rutina 4": "Rutina en forma de arco: \n● Realiza una forma de arco o cuadrado.\n● Cierra la pinza cuando baja y la abre cuando sube.",
         }
         texto = textos.get(choice, "No hay información disponible")
         self.descripcion_subrutina_elegida.set(texto)
@@ -310,7 +310,7 @@ class ModoAutomatico(ctk.CTkToplevel):
             self.frame_descripcion,
             corner_radius=13,
             height=185,
-            font=("Arial", 18),
+            font=("Arial", 16),
         )
         self.cajaTexto.grid(row=0, column=0, sticky="nsew")
         self.cajaTexto.insert("0.0", self.descripcion_subrutina_elegida.get())
