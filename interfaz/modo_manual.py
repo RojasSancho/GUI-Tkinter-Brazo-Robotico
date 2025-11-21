@@ -114,15 +114,15 @@ class ModoManual(ctk.CTkToplevel):
     def crear_sliders(self):
         self.slider_vals = {
             "base": ctk.DoubleVar(value=90),
-            "brazo": ctk.DoubleVar(value=120),
-            "codo": ctk.DoubleVar(value=90),
-            "pinza": ctk.DoubleVar(value=60),
+            "brazo": ctk.DoubleVar(value=140),
+            "codo": ctk.DoubleVar(value=110),
+            "pinza": ctk.DoubleVar(value=90),
         }
 
         controles = [
-            ("Base (70–180°)", "base", 70, 180, "red"),
-            ("Brazo (110–180°)", "brazo", 110, 180, "green"),
-            ("Codo (90–135°)", "codo", 90, 135, "orange"),
+            ("Base (70–180°)", "base", 0, 180, "red"),
+            ("Brazo (110–180°)", "brazo", 150, 170, "green"),
+            ("Codo (90–135°)", "codo", 110, 150, "orange"),
             ("Pinza (0–180°)", "pinza", 0, 180, "blue"),
         ]
 
@@ -234,6 +234,12 @@ class ModoManual(ctk.CTkToplevel):
         )
 
         self.canvas.draw()
+
+        # Envia rutinas al Arduino
+        self.parent.enviar_slider(4, int(ang_base))
+        self.parent.enviar_slider(1, int(ang_brazo))
+        self.parent.enviar_slider(2, int(ang_codo))
+        self.parent.enviar_slider(3, int(ang_pinza))
 
     # ------------------------------
     def volver_al_menu(self):

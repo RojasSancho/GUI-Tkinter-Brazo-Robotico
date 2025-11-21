@@ -168,6 +168,34 @@ class ArduinoDetector:
             print("-----------------------------")
             print(f"Error al enviar datos: {e}")
             return False
+        
+    def enviar_slider(self, servo, angulo):
+        """
+        Envía un comando del slider, formato Sa,b
+
+        Args:
+            Servo (int): Número de servo en el Arduino.
+            Angulo (int): Posicion del servo actual.
+
+        Returns:
+            bool: True si el comando fue enviado correctamente.
+                    False si no existe conexión activa.
+        """
+        if not self.conexion or not self.conexion.is_open:
+            print("No existe conexion activa con un Arduino")
+            return False
+
+        try:
+            mensaje = f"S{a},{b}\n"
+            self.conexion.write(mensaje.encode("utf-8"))
+            print("-----------------------------")
+            print(f"Mensaje enviado al Arduino: {mensaje.strip()}")
+            return True
+
+        except serial.SerialException as e:
+            print("-----------------------------")
+            print(f"Error al enviar datos: {e}")
+            return False
 
     # ------------------------------------------------------------------
 
