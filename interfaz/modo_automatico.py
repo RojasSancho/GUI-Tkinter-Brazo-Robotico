@@ -35,10 +35,10 @@ class ModoAutomatico(ctk.CTkToplevel):
         )
         self.numero_var = ctk.IntVar(value=0)
         self.videos = {
-            "Rutina 1": r"videos\rutina1.mp4",
-            "Rutina 2": r"videos\rutina2.mp4",
-            "Rutina 3": r"videos\rutina3.mp4",
-            "Rutina 4": r"videos\rutina4.mp4",
+            "Rutina 1": r"videos\rutina1-cap.mp4",
+            "Rutina 2": r"videos\rutina2-cap.mp4",
+            "Rutina 3": r"videos\rutina3-cap.mp4",
+            "Rutina 4": r"videos\rutina4-cap.mp4",
         }
 
         self.cap = None
@@ -432,7 +432,7 @@ class ModoAutomatico(ctk.CTkToplevel):
             self.label_video.image = img_final
 
             # Guardar el id del ciclo para poder cancelarlo después
-            self.after_id = self.after(24, mostrar_frame)
+            self.after_id = self.after(30, mostrar_frame)
 
         mostrar_frame()
 
@@ -447,7 +447,7 @@ class ModoAutomatico(ctk.CTkToplevel):
         try:
             if hasattr(self, "after_id") and self.after_id:
                 self.after_cancel(self.after_id)
-        except:
+        except Exception:
             pass
 
         # Cerrar detector correctamente
