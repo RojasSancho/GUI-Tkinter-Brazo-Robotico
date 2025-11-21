@@ -65,7 +65,9 @@ def abrir_modo_manual(ventana, frame_inferior):
             ventana.deiconify()  # Muestra de nuevo
 
         # Abrir ventana de modo manual
-        ModoManual(parent=ventana, volver_callback=volver_al_principal)
+        ModoManual(parent=ventana, detector = detector, volver_callback=volver_al_principal)
+
+
     else:
         print("Modo Manual cancelado")
 

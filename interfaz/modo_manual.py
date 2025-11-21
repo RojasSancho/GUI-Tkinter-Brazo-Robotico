@@ -5,6 +5,7 @@ import matplotlib
 
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from hardware.arduino_detector import ArduinoDetector
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 
@@ -13,7 +14,8 @@ import matplotlib.pyplot as plt
 #     Clase modo automatico
 # ------------------------------
 class ModoManual(ctk.CTkToplevel):
-    def __init__(self, parent, volver_callback=None):
+    def __init__(self, parent, detector, volver_callback=None):
+
         """
         L1: altura base, simbolico por que en realida es la base
         L2: longitud primer segmento
@@ -26,7 +28,12 @@ class ModoManual(ctk.CTkToplevel):
         self.largo_pinza = 4
 
         super().__init__(parent)
-        self.parent = parent
+
+        # -----------------------------------
+        #  DETECTOR
+        # -----------------------------------
+        self.detector = detector
+
         self.volver_callback = volver_callback
 
         self.title("Modo Manual")
@@ -135,21 +142,48 @@ class ModoManual(ctk.CTkToplevel):
                 text=texto,
                 font=("Arial", 16),
                 text_color="black",
-                fg_color="#e6e6e6",  # Color de fondo
+                fg_color="#e6e6e6",
                 corner_radius=6,
             )
             label.grid(row=i * 2, column=0, padx=10, pady=(10, 0), sticky="w")
 
+
+            # Cada slider envía su valor al Arduino mediante un callback
             slider = ctk.CTkSlider(
                 self.frame_scroll_control,
                 from_=mn,
                 to=mx,
                 variable=self.slider_vals[varname],
-                command=self.actualizar_grafico,
+                command=lambda val, n=varname: self.enviar_y_actualizar(n, val),
                 progress_color=color,
                 button_color=color,
             )
             slider.grid(row=i * 2 + 1, column=0, padx=10, pady=(0, 10), sticky="ew")
+
+    # Envía el comando al Arduino y actualiza el gráfico
+    def enviar_y_actualizar(self, nombre, valor):
+        ang = int(float(valor))  # asegura conversión correcta
+
+        # Mapea slider → número de servo
+        mapa_servos = {
+            "base": 4,
+            "brazo": 1,
+            "codo": 2,
+            "pinza": 3,
+        }
+
+        # Envía comando Sa,b al Arduino
+        try:
+            # -----------------------------
+            # Antes: self.parent.enviar_slider
+            # Ahora: self.detector.enviar_slider
+            # -----------------------------
+            self.detector.enviar_slider(mapa_servos[nombre], ang)
+        except Exception as e:
+            print("Error enviando al Arduino:", e)
+
+        # Actualiza el gráfico después de mover el slider
+        self.actualizar_grafico()
 
     # ------------------------------
     def cinematicas_3d(self, angulo_base, angulo_brazo, angulo_codo):
@@ -226,20 +260,10 @@ class ModoManual(ctk.CTkToplevel):
         x_p1 = x_end + l_pinza * np.sin(thp / 2)
         x_p2 = x_end - l_pinza * np.sin(thp / 2)
 
-        self.ax.plot(
-            [x_end, x_p1], [y_end, y_end], [z_end, z_end], color="blue", linewidth=2
-        )
-        self.ax.plot(
-            [x_end, x_p2], [y_end, y_end], [z_end, z_end], color="blue", linewidth=2
-        )
+        self.ax.plot([x_end, x_p1], [y_end, y_end], [z_end, z_end], color="blue", linewidth=2)
+        self.ax.plot([x_end, x_p2], [y_end, y_end], [z_end, z_end], color="blue", linewidth=2)
 
         self.canvas.draw()
-
-        # Envia rutinas al Arduino
-        self.parent.enviar_slider(4, int(ang_base))
-        self.parent.enviar_slider(1, int(ang_brazo))
-        self.parent.enviar_slider(2, int(ang_codo))
-        self.parent.enviar_slider(3, int(ang_pinza))
 
     # ------------------------------
     def volver_al_menu(self):
