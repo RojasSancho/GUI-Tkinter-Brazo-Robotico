@@ -102,6 +102,8 @@ Proyecto Integrador de Lenguaje Ensamblador y Fundamentos de Arquitectura
 
 ### Modo de Rutina
 
+![alt text](image.png)
+
 ### Modo Manual
 
 ![alt text](images/modo_manual.png)
