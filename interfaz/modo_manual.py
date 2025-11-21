@@ -120,10 +120,10 @@ class ModoManual(ctk.CTkToplevel):
         }
 
         controles = [
-            ("Base (70–180°)", "base", 0, 180, "red"),
-            ("Brazo (110–180°)", "brazo", 150, 170, "green"),
-            ("Codo (90–135°)", "codo", 110, 150, "orange"),
-            ("Pinza (0–180°)", "pinza", 0, 180, "blue"),
+            ("Base (0–180°)", "base", 0, 180, "red"),
+            ("Brazo (130-170°)", "brazo", 130, 170, "green"),
+            ("Codo (110–150°)", "codo", 110, 150, "orange"),
+            ("Pinza (0–100%)", "pinza", 0, 180, "blue"),
         ]
 
         for i, control in enumerate(controles):
