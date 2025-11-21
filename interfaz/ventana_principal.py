@@ -28,7 +28,10 @@ import customtkinter as ctk
 from tkinter import messagebox
 
 from hardware.arduino_detector import ArduinoDetector
+
 from interfaz.modo_automatico import ModoAutomatico
+
+# from interfaz.modo_auto import ModoAutomatico
 from interfaz.modo_manual import ModoManual
 
 # ------------------------------
