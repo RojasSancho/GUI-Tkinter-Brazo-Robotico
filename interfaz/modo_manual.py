@@ -129,8 +129,8 @@ class ModoManual(ctk.CTkToplevel):
         controles = [
             ("Base (0–180°)", "base", 0, 180, "red"),
             ("Brazo (130-170°)", "brazo", 130, 170, "green"),
-            ("Codo (110–150°)", "codo", 110, 150, "orange"),
-            ("Pinza (0–100%)", "pinza", 0, 180, "blue"),
+            ("Codo (110–150°)", "codo", 150, 100, "orange"),
+            ("Pinza (0–100%)", "pinza", 180, 0, "blue"),
         ]
 
         for i, control in enumerate(controles):
@@ -255,10 +255,10 @@ class ModoManual(ctk.CTkToplevel):
         # PINZA
         x_end, y_end, z_end = xs[-1], ys[-1], zs[-1]
         l_pinza = 1.0
-        thp = np.radians(ang_pinza)
+        angpi = np.radians(180-ang_pinza)
 
-        x_p1 = x_end + l_pinza * np.sin(thp / 2)
-        x_p2 = x_end - l_pinza * np.sin(thp / 2)
+        x_p1 = x_end + l_pinza * np.cos(angpi / 2)
+        x_p2 = x_end - l_pinza * np.cos(angpi / 2)
 
         self.ax.plot([x_end, x_p1], [y_end, y_end], [z_end, z_end], color="blue", linewidth=2)
         self.ax.plot([x_end, x_p2], [y_end, y_end], [z_end, z_end], color="blue", linewidth=2)
