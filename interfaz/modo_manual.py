@@ -23,8 +23,8 @@ class ModoManual(ctk.CTkToplevel):
         largo_pinza: longitud visual de la pinza
         """
         self.L1 = 3
-        self.L2 = 5
-        self.L3 = 5
+        self.L2 = 3
+        self.L3 = 3
         self.largo_pinza = 4
 
         super().__init__(parent)
@@ -195,25 +195,26 @@ class ModoManual(ctk.CTkToplevel):
         """
         angulo_base_radianes = np.radians(angulo_base)
         angulo_brazo_radianes = np.radians(angulo_brazo)
-        angulo_codo_radianes = np.radians(angulo_codo)
 
-        # Base vertical
+        # Ángulo del codo INDEPENDIENTE
+        angulo_codo_radianes = np.radians(180 - angulo_codo)
+
+        # Base
         x0, y0, z0 = 0, 0, 0
         x1, y1, z1 = 0, 0, self.L1
 
-        # Primer segmento brazo
+        # ----------------------------------------
+        # 1. Primer segmento (verde)
+        # ----------------------------------------
         x2 = x1 + self.L2 * np.cos(angulo_brazo_radianes) * np.cos(angulo_base_radianes)
         y2 = y1 + self.L2 * np.cos(angulo_brazo_radianes) * np.sin(angulo_base_radianes)
         z2 = z1 + self.L2 * np.sin(angulo_brazo_radianes)
 
         # Segundo segmento codo
-        x3 = x2 + self.L3 * np.cos(
-            angulo_brazo_radianes + angulo_codo_radianes
-        ) * np.cos(angulo_base_radianes)
-        y3 = y2 + self.L3 * np.cos(
-            angulo_brazo_radianes + angulo_codo_radianes
-        ) * np.sin(angulo_base_radianes)
-        z3 = z2 + self.L3 * np.sin(angulo_brazo_radianes + angulo_codo_radianes)
+        angulo_codo_radianes -= np.radians(172)
+        x3 = x2 + self.L3 * np.cos(angulo_codo_radianes) * np.cos(angulo_base_radianes)
+        y3 = y2 + self.L3 * np.cos(angulo_codo_radianes) * np.sin(angulo_base_radianes)
+        z3 = z2 + self.L3 * np.sin(angulo_codo_radianes)
 
         return (x0, x1, x2, x3), (y0, y1, y2, y3), (z0, z1, z2, z3)
 
@@ -255,7 +256,7 @@ class ModoManual(ctk.CTkToplevel):
         # PINZA
         x_end, y_end, z_end = xs[-1], ys[-1], zs[-1]
         l_pinza = 1.0
-        angpi = np.radians(180-ang_pinza)
+        angpi = np.radians(ang_pinza)
 
         x_p1 = x_end + l_pinza * np.cos(angpi / 2)
         x_p2 = x_end - l_pinza * np.cos(angpi / 2)
