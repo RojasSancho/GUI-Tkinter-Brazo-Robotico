@@ -291,6 +291,13 @@ class ModoAutomatico(ctk.CTkToplevel):
                         parent=self,
                     )
                     self.boton_ejecutar.configure(state="normal")
+                    return
+
+                elif respuesta == "Rutina detenida":
+                    self.rutina_activa = False
+                    print("Arduino confirma detención de la rutina.")
+                    self.boton_ejecutar.configure(state="normal")
+                    return
 
                 # Caso: timeout
                 elif tiempo_transcurrido > timeout_segundos:
@@ -335,6 +342,11 @@ class ModoAutomatico(ctk.CTkToplevel):
             respuesta = self.detector.leer_respuesta()
             if respuesta == "Rutina detenida":
                 print("Arduino confirma detención de la rutina.")
+                mbox.showinfo(
+                    "Rutina detenida",
+                    "La rutina fue detenida correctamente por el Arduino.",
+                    parent=self,
+                )
                 self.boton_ejecutar.configure(state="normal")
             else:
                 self.after(100, revisar_detencion)
