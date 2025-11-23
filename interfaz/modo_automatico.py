@@ -293,6 +293,7 @@ class ModoAutomatico(ctk.CTkToplevel):
                     self.boton_ejecutar.configure(state="normal")
                     return
 
+                # Caso: rutina detenida
                 elif respuesta == "Rutina detenida":
                     self.rutina_activa = False
                     print("Arduino confirma detención de la rutina.")
