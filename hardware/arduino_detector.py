@@ -35,7 +35,7 @@ for puerto in puertos:
 
 class ArduinoDetector:
     """
-    Administra la detección, conexión y comunicación con un Arduino mediante puerto serie. Ofrece funciones para enviar comandos, leer respuestas, limpiar el buffer y verificar el estado de físico de la conexión.
+    Administra la detección, conexión y comunicación con un Arduino mediante puerto serie. Ofrece funciones para enviar comandos, leer respuestas, limpiar el buffer y verificar el estado físico de la conexión.
 
     Cuenta con funciones para:
         - detectar el puerto donde está el Arduino,
