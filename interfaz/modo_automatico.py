@@ -85,10 +85,10 @@ class ModoAutomatico(ctk.CTkToplevel):
 
         # Mapa de rutinas con rutas a los videos correspondientes
         self.videos = {
-            "Rutina 1": r"videos\rutina1-cap.mp4",
-            "Rutina 2": r"videos\rutina2-cap.mp4",
-            "Rutina 3": r"videos\rutina3-cap.mp4",
-            "Rutina 4": r"videos\rutina4-cap.mp4",
+            "Rutina 1": r"videos\rutina1.mp4",
+            "Rutina 2": r"videos\rutina2.mp4",
+            "Rutina 3": r"videos\rutina3.mp4",
+            "Rutina 4": r"videos\rutina4.mp4",
         }
 
         self.cap = None  # Objeto de captura de video
